@@ -8,6 +8,7 @@
 		<version>2.3.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>com.omblanco.springboot.webflux.api</groupId>
 	<artifactId>spring-boot-webflux-basic-api</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
