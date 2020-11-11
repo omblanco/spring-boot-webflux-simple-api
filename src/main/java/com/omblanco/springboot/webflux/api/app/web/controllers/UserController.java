@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.controllers;
+package com.omblanco.springboot.webflux.api.app.web.controllers;
 
 import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.FORWARD_SLASH;
 import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.ID_PARAM_URL;
@@ -106,6 +106,7 @@ public class UserController {
      * @return Resultado de la actualización
      */
     @PutMapping(ID_PARAM_URL)
+    @ResponseBody
     public Mono<ResponseEntity<User>> update(@RequestBody User user, @PathVariable Long id) {
 
         return userService.findById(id).flatMap(userDb -> {
