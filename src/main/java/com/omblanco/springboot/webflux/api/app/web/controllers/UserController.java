@@ -81,7 +81,7 @@ public class UserController {
      * @param monoUser Usuario a guardar
      * @return Usuario resultado de la operación
      */
-    @PostMapping(ID_PARAM_URL)
+    @PostMapping
     @ResponseBody
     public Mono<ResponseEntity<User>> create(@RequestBody Mono<User> monoUser) {
 
