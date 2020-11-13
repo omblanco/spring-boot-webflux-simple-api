@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 
+import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,6 +35,7 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  */
+@AllArgsConstructor
 @Controller
 @RequestMapping(USER_BASE_URL_V1)
 public class UserController {
@@ -41,15 +43,6 @@ public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private UserService userService;
-
-    /**
-     * Constructor con el servicio
-     * 
-     * @param userService Servicio de usuarios
-     */
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     /**
      * Recupera todos los usuarios
