@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.omblanco.springboot.webflux.api.app.ModelMapperConfig;
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
 import com.omblanco.springboot.webflux.api.app.services.UserServiceImpl;
@@ -31,7 +32,7 @@ import reactor.core.publisher.Mono;
 
 @Disabled
 @WebFluxTest(controllers = UserController.class)
-@Import(UserServiceImpl.class)
+@Import({UserServiceImpl.class, ModelMapperConfig.class})
 public class UserControllerUnitTest {
     
     @MockBean

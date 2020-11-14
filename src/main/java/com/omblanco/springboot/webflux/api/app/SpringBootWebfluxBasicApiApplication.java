@@ -12,8 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
@@ -41,10 +41,10 @@ public class SpringBootWebfluxBasicApiApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User john = new User(null, "John", "Doe", "john@mail.com", new Date());
-        User oscar = new User(null, "Oscar", "Suarez", "oscar@mail.com", new Date());
-        User maria = new User(null, "Maria", "Salgado", "salgado@mail.com", new Date());
-        User manuel = new User(null, "Manuel", "Lopez", "manuel@mail.com", new Date());
+        UserDTO john = new UserDTO(null, "John", "Doe", "john@mail.com", new Date());
+        UserDTO oscar = new UserDTO(null, "Oscar", "Suarez", "oscar@mail.com", new Date());
+        UserDTO maria = new UserDTO(null, "Maria", "Salgado", "salgado@mail.com", new Date());
+        UserDTO manuel = new UserDTO(null, "Manuel", "Lopez", "manuel@mail.com", new Date());
         
         
         Flux.just(john, oscar, maria, manuel)

@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -51,7 +51,7 @@ public class UserController {
      */
     @GetMapping
     @ResponseBody
-    public Mono<ResponseEntity<Flux<User>>> findAll() {
+    public Mono<ResponseEntity<Flux<UserDTO>>> findAll() {
         return Mono.just(ResponseEntity.ok().contentType(APPLICATION_JSON).body(userService.findAll()));
     }
 
@@ -63,7 +63,7 @@ public class UserController {
      */
     @GetMapping(ID_PARAM_URL)
     @ResponseBody
-    public Mono<ResponseEntity<User>> get(@PathVariable Long id) {
+    public Mono<ResponseEntity<UserDTO>> get(@PathVariable Long id) {
         return userService.findById(id).map(p -> ResponseEntity.ok().contentType(APPLICATION_JSON).body(p))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
@@ -76,7 +76,7 @@ public class UserController {
      */
     @PostMapping
     @ResponseBody
-    public Mono<ResponseEntity<User>> create(@RequestBody Mono<User> monoUser) {
+    public Mono<ResponseEntity<UserDTO>> create(@RequestBody Mono<UserDTO> monoUser) {
 
         return monoUser.flatMap(user -> {
             return userService.save(user).map(userDb -> {
@@ -100,7 +100,7 @@ public class UserController {
      */
     @PutMapping(ID_PARAM_URL)
     @ResponseBody
-    public Mono<ResponseEntity<User>> update(@RequestBody User user, @PathVariable Long id) {
+    public Mono<ResponseEntity<UserDTO>> update(@PathVariable Long id, @RequestBody UserDTO user) {
 
         return userService.findById(id).flatMap(userDb -> {
 

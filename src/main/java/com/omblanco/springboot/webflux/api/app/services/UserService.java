@@ -1,6 +1,6 @@
 package com.omblanco.springboot.webflux.api.app.services;
 
-import com.omblanco.springboot.webflux.api.app.model.entity.User;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,26 +16,26 @@ public interface UserService {
      * Recupera todos los Usuarios
      * @return Flux de usuarios
      */
-    Flux<User> findAll();
+    Flux<UserDTO> findAll();
     
     /**
      * Busca un usuario por la clave
      * @param id Clave
      * @return Usuario
      */
-    Mono<User> findById(Long id);
+    Mono<UserDTO> findById(Long id);
     
     /**
      * Guarda un usuario
-     * @param user Usuario
+     * @param userDto Usuario
      * @return Resultado de la operación
      */
-    Mono<User> save(User user);
+    Mono<UserDTO> save(UserDTO userDto);
     
     /**
      * Elimina un usuario
-     * @param user usuario a eliminar
+     * @param userDto usuario a eliminar
      * @return
      */
-    Mono<Void> delete(User user);
+    Mono<Void> delete(UserDTO userDto);
 }

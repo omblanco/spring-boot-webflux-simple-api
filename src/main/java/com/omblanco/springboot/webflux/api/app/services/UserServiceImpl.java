@@ -1,11 +1,13 @@
 package com.omblanco.springboot.webflux.api.app.services;
 
-import java.util.Date;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -24,19 +26,23 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     
     private Scheduler jdbcScheduler;
+    
+    private ModelMapper modelMapper;
 
     @Override
-    public Flux<User> findAll() {
-        return Flux.defer(() -> Flux.fromIterable(userRepository.findAll()))
+    public Flux<UserDTO> findAll() {
+        return Flux.defer(() -> Flux.fromIterable(userRepository.findAll()
+                .stream().map(this::convertToDto)
+                .collect(Collectors.toList())))
                 .subscribeOn(jdbcScheduler);
     }
 
     @Override
-    public Mono<User> findById(Long id) {
+    public Mono<UserDTO> findById(Long id) {
         
         return Mono.defer(() -> Mono.just(userRepository.findById(id))).flatMap(optional -> {
             if (optional.isPresent()) {
-                return Mono.just(optional.get());
+                return Mono.just(convertToDto(optional.get()));
             }
             
             return Mono.empty();
@@ -44,17 +50,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> save(User user) {
+    public Mono<UserDTO> save(UserDTO userDto) {
         
-        return Mono.defer(() -> Mono.just(userRepository.save(user)))
+        return Mono.defer(() -> Mono.just(convertToDto(userRepository.save(convertToEntity(userDto)))))
                 .subscribeOn(jdbcScheduler);
     }
 
     @Override
-    public Mono<Void> delete(User user) {
+    public Mono<Void> delete(UserDTO userDto) {
         return Mono.defer(() -> {
-            userRepository.delete(user);
+            userRepository.delete(convertToEntity(userDto));
             return Mono.empty();
         }).subscribeOn(jdbcScheduler).then();
     } 
+    
+    /**
+     * Conversión de Modelo a DTO
+     * @param user Usuario Modelo
+     * @return Usuario DTO
+     */
+    private UserDTO convertToDto(User user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
+    
+    /**
+     * Conversión de DTO a Modelo
+     * @param userDto DTO del usuario
+     * @return Modelo del usuario
+     */
+    private User convertToEntity(UserDTO userDto) {
+        return modelMapper.map(userDto, User.class);
+    }
 }
