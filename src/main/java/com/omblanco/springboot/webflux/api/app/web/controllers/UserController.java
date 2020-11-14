@@ -9,11 +9,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
@@ -76,7 +81,7 @@ public class UserController {
      */
     @PostMapping
     @ResponseBody
-    public Mono<ResponseEntity<UserDTO>> create(@RequestBody Mono<UserDTO> monoUser) {
+    public Mono<ResponseEntity<UserDTO>> create(@RequestBody @Valid Mono<UserDTO> monoUser) {
 
         return monoUser.flatMap(user -> {
             return userService.save(user).map(userDb -> {
@@ -84,11 +89,16 @@ public class UserController {
                         .created(URI.create(USER_BASE_URL_V1.concat(FORWARD_SLASH).concat(userDb.getId().toString())))
                         .contentType(APPLICATION_JSON).body(userDb);
             });
-        }).onErrorResume(throwable -> {
-            LOG.error("Error on save user: " + monoUser.block());
-            // TODO:gestionar errores de validación
-            return Mono.just(ResponseEntity.badRequest().build());
         });
+//                .onErrorResume(throwable -> {
+//            
+//            monoUser.map(user -> {
+//                LOG.error("Error on save user: " + user);
+//                return true;
+//            });
+//            // TODO:gestionar errores de validación
+//            return Mono.just(ResponseEntity.badRequest().build());
+//        });
     }
 
     /**
@@ -100,7 +110,7 @@ public class UserController {
      */
     @PutMapping(ID_PARAM_URL)
     @ResponseBody
-    public Mono<ResponseEntity<UserDTO>> update(@PathVariable Long id, @RequestBody UserDTO user) {
+    public Mono<ResponseEntity<UserDTO>> update(@PathVariable Long id, @Valid @RequestBody UserDTO user) {
 
         return userService.findById(id).flatMap(userDb -> {
 
@@ -131,4 +141,5 @@ public class UserController {
             return userService.delete(userDb).then(Mono.just(new ResponseEntity<Void>(NO_CONTENT)));
         }).defaultIfEmpty(new ResponseEntity<Void>(NOT_FOUND));
     }
+    
 }

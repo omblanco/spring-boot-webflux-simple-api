@@ -1,15 +1,17 @@
 package com.omblanco.springboot.webflux.api.app.web.controllers;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -98,6 +100,27 @@ public class UserControllerTests {
             Assertions.assertThat(userResponse.getName()).isEqualTo(user.getName());
             Assertions.assertThat(userResponse.getSurname()).isEqualTo(user.getSurname());
         });
+    }
+    
+    @Test
+    public void postWithValidationErrorsTest() {
+        UserDTO user = new UserDTO(null, "F", "De", "fu", null);
+        
+        client.post()
+        .uri(BaseApiConstants.USER_BASE_URL_V1)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(Mono.just(user), UserDTO.class)
+        .exchange()
+        .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
+        .expectHeader().contentType(MediaType.APPLICATION_JSON)
+        .expectBody()
+        .jsonPath("$.code").isNotEmpty()
+        .jsonPath("$.code").isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.name())
+        .jsonPath("$.message").isNotEmpty()
+        .jsonPath("$.message").isEqualTo("Validation failure: userDTO")
+        .jsonPath("$.errors").isArray()
+        .jsonPath("$.errors.length()").isEqualTo(5);
     }
     
     @Test
