@@ -29,9 +29,6 @@ public class SpringBootWebfluxBasicApiApplication implements CommandLineRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringBootWebfluxBasicApiApplication.class);
     
-    @Value("${spring.datasource.maximum-pool-size}")
-    private int connectionPoolSize;
-    
     @Autowired
     private UserService userService;
     
@@ -50,10 +47,5 @@ public class SpringBootWebfluxBasicApiApplication implements CommandLineRunner {
         Flux.just(john, oscar, maria, manuel)
         .flatMap(userService::save)
         .subscribe(user -> LOG.info("Usuario insertado: ".concat(user.toString())));
-    }
-    
-    @Bean
-    public Scheduler jdbcScheduler() {
-        return Schedulers.fromExecutor(Executors.newFixedThreadPool(connectionPoolSize));
     }
 }

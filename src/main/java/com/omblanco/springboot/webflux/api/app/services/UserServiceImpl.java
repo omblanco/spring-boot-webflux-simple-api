@@ -12,7 +12,7 @@ import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * Implmentación del servicio de usuarios
@@ -25,8 +25,6 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     
-    private Scheduler jdbcScheduler;
-    
     private ModelMapper modelMapper;
 
     @Override
@@ -34,7 +32,7 @@ public class UserServiceImpl implements UserService {
         return Flux.defer(() -> Flux.fromIterable(userRepository.findAll()
                 .stream().map(this::convertToDto)
                 .collect(Collectors.toList())))
-                .subscribeOn(jdbcScheduler);
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
@@ -46,14 +44,14 @@ public class UserServiceImpl implements UserService {
             }
             
             return Mono.empty();
-        }).subscribeOn(jdbcScheduler);
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
     public Mono<UserDTO> save(UserDTO userDto) {
         
         return Mono.defer(() -> Mono.just(convertToDto(userRepository.save(convertToEntity(userDto)))))
-                .subscribeOn(jdbcScheduler);
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService {
         return Mono.defer(() -> {
             userRepository.delete(convertToEntity(userDto));
             return Mono.empty();
-        }).subscribeOn(jdbcScheduler).then();
+        }).subscribeOn(Schedulers.boundedElastic()).then();
     } 
     
     /**

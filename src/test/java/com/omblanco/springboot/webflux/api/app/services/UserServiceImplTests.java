@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
@@ -21,7 +20,6 @@ import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.test.StepVerifier;
 
 /**
@@ -29,14 +27,10 @@ import reactor.test.StepVerifier;
  * @author oscar.martinezblanco
  *
  */
-@Disabled
 public class UserServiceImplTests {
 
     @Mock
     private UserRepository mockUserRepository;
-    
-    @Mock
-    private Scheduler jdbcScheduler;
     
     @Mock
     private ModelMapper modelMapper;
@@ -46,7 +40,7 @@ public class UserServiceImplTests {
     @BeforeEach
     public void setUp() {
         initMocks(this);
-        userService = new UserServiceImpl(mockUserRepository, jdbcScheduler, modelMapper);
+        userService = new UserServiceImpl(mockUserRepository, modelMapper);
     }
     
     @Test

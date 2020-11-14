@@ -1,7 +1,5 @@
 package com.omblanco.springboot.webflux.api.app.web.controllers;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +24,6 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  */
-@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureWebTestClient
 public class UserControllerTests {
