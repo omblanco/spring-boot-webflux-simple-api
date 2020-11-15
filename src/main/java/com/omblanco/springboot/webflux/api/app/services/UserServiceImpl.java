@@ -3,11 +3,16 @@ package com.omblanco.springboot.webflux.api.app.services;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
+import com.omblanco.springboot.webflux.api.app.model.specifications.UserSpecifications;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -33,6 +38,13 @@ public class UserServiceImpl implements UserService {
                 .stream().map(this::convertToDto)
                 .collect(Collectors.toList())))
                 .subscribeOn(Schedulers.boundedElastic());
+    }
+    
+    @Override
+    public Mono<Page<UserDTO>> findByFilter(UserFilterDTO filter, Pageable pageable) {
+        return Mono.defer(() -> Mono.just(userRepository.findAll(UserSpecifications.withFilter(filter), pageable)))
+            .map(this::convertPageToDto)
+            .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
@@ -69,6 +81,17 @@ public class UserServiceImpl implements UserService {
      */
     private UserDTO convertToDto(User user) {
         return modelMapper.map(user, UserDTO.class);
+    }
+    
+    /**
+     * Transforma una página de modelos a dtos
+     * @param userPage Página de modelos
+     * @return Página de dtos
+     */
+    private Page<UserDTO> convertPageToDto(Page<User> userPage) {
+        return new PageImpl<UserDTO>(userPage.getContent().stream().map(user -> {
+            return this.convertToDto(user);
+        }).collect(Collectors.toList()), userPage.getPageable(), userPage.getSize());
     }
     
     /**

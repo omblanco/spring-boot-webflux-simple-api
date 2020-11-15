@@ -13,10 +13,14 @@ import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -67,6 +71,43 @@ public class UserControllerUnitTest {
         //then:
         verify(userRepository, times(1)).findAll();
     }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void findFyFilterTest() {
+        //given
+        User user = new User(1L, "Maria", "Doe", "john@mail.com", new Date());
+        
+        String name = "Maria";
+        Integer page = 0;
+        Integer size = 10;
+        
+        Page<User> pageUsers = new PageImpl<User>(Arrays.asList(user));
+        
+        //when
+        when(userRepository.findAll(ArgumentMatchers.any(Specification.class), ArgumentMatchers.any())).thenReturn(pageUsers);
+        webTestClient.get().uri(uriBuilder ->
+            uriBuilder
+            .path(BaseApiConstants.USER_BASE_URL_V1)
+            .queryParam("page", page)
+            .queryParam("size", size)
+            .queryParam("name", name)
+            .build())
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange().expectStatus()
+        .isOk()
+        .expectHeader().contentType(MediaType.APPLICATION_JSON)
+        .expectBody()
+         //then:
+        .jsonPath("$.numberOfElements").isNotEmpty()
+        .jsonPath("$.numberOfElements").isEqualTo(1)
+        .jsonPath("$.content").isArray()
+        .jsonPath("$.content.length()").isEqualTo(1)
+        .jsonPath("$.content[0].name").isEqualTo(name);
+        
+        //then:
+        verify(userRepository, times(1)).findAll(ArgumentMatchers.any(Specification.class), ArgumentMatchers.any());
+    }    
     
     @Test
     public void getByidTest() {

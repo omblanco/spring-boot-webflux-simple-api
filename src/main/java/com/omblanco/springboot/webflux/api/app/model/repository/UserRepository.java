@@ -1,5 +1,8 @@
 package com.omblanco.springboot.webflux.api.app.model.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
@@ -11,4 +14,11 @@ import com.omblanco.springboot.webflux.api.app.model.entity.User;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    /**
+     * Búsqueda filtrada, paginada y ordenada
+     * @param specification Especificación de búsqueda
+     * @param pageable Paginación
+     * @return Página de usuarios
+     */
+    Page<User> findAll(Specification<User> specification, Pageable pageable);
 }

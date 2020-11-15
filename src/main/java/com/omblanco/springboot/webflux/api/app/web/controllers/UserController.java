@@ -13,6 +13,11 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -56,6 +62,13 @@ public class UserController {
     public Mono<ResponseEntity<Flux<UserDTO>>> findAll() {
         return Mono.just(ResponseEntity.ok().contentType(APPLICATION_JSON).body(userService.findAll()));
     }
+    
+    @GetMapping(params = {"page", "size"})
+    @ResponseBody
+    public Mono<ResponseEntity<Mono<Page<UserDTO>>>> findByFilter(UserFilterDTO filter,
+            @SortDefault(sort = "id", direction = Sort.Direction.DESC) @PageableDefault(value = 10) Pageable pageable) {
+        return Mono.just(ResponseEntity.ok().contentType(APPLICATION_JSON).body(userService.findByFilter(filter, pageable)));
+    }    
 
     /**
      * Recupera un usuario por clave primaria

@@ -54,6 +54,31 @@ public class UserControllerTests {
     }
     
     @Test
+    public void findFyFilterTest() {
+        String name = "Maria";
+        Integer page = 0;
+        Integer size = 10;
+        
+        client.get().uri(uriBuilder ->
+            uriBuilder
+            .path(BaseApiConstants.USER_BASE_URL_V1)
+            .queryParam("page", page)
+            .queryParam("size", size)
+            .queryParam("name", name)
+            .build())
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange().expectStatus()
+        .isOk()
+        .expectHeader().contentType(MediaType.APPLICATION_JSON)
+        .expectBody()
+        .jsonPath("$.numberOfElements").isNotEmpty()
+        .jsonPath("$.numberOfElements").isEqualTo(1)
+        .jsonPath("$.content").isArray()
+        .jsonPath("$.content.length()").isEqualTo(1)
+        .jsonPath("$.content[0].name").isEqualTo(name);
+    }
+    
+    @Test
     public void getByidTest() {
         UserDTO user = userService.findAll().blockFirst();
         
