@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -30,7 +29,6 @@ import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
 import reactor.core.publisher.Mono;
 
 
-@Disabled
 @WebFluxTest(controllers = UserController.class)
 @Import({UserServiceImpl.class, ModelMapperConfig.class})
 public class UserControllerUnitTest {
