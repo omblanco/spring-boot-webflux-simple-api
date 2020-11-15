@@ -2,6 +2,7 @@ package com.omblanco.springboot.webflux.api.app.model.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,11 +33,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @Column(length = 25, nullable = false)
     private String name;
     
+    @Column(length = 50, nullable = false)
     private String surname;
     
+    @Column(length = 50, nullable = false)
     private String email;
     
+    @Column(nullable = false)
     private Date birthdate;
 }
