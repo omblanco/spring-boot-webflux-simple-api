@@ -1,7 +1,6 @@
 package com.omblanco.springboot.webflux.api.app.web.controllers;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,6 @@ import com.omblanco.springboot.webflux.api.app.web.dto.AppInfoDTO;
  * @author oscar.martinezblanco
  *
  */
-@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureWebTestClient
 public class AppInfoControllerTests {

@@ -5,17 +5,17 @@ import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import reactor.core.publisher.Mono;
 
@@ -24,7 +24,6 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  */
-@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureWebTestClient
 public class UserControllerTests {
@@ -43,9 +42,9 @@ public class UserControllerTests {
         .exchange().expectStatus()
         .isOk()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBodyList(User.class)
+        .expectBodyList(UserDTO.class)
         .consumeWith(response -> {
-            List<User> users = response.getResponseBody();
+            List<UserDTO> users = response.getResponseBody();
             users.forEach(user -> {
                 System.out.println(user);
             });
@@ -56,7 +55,7 @@ public class UserControllerTests {
     
     @Test
     public void getByidTest() {
-        User user = userService.findAll().blockFirst();
+        UserDTO user = userService.findAll().blockFirst();
         
         client.get()
         .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
@@ -64,9 +63,9 @@ public class UserControllerTests {
         .exchange()
         .expectStatus().isOk()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBody(User.class)
+        .expectBody(UserDTO.class)
         .consumeWith(response -> {
-            User userResponse = response.getResponseBody();
+            UserDTO userResponse = response.getResponseBody();
             Assertions.assertThat(userResponse.getId()).isNotNull();
             Assertions.assertThat(userResponse.getId() > 0).isTrue();
             Assertions.assertThat(userResponse.getId()).isEqualTo(user.getId());
@@ -79,18 +78,18 @@ public class UserControllerTests {
     
     @Test
     public void postTest() {
-        User user = new User(null, "Fulano", "De tal", "fulano@mail.com", new Date());
+        UserDTO user = new UserDTO(null, "Fulano", "De tal", "fulano@mail.com", new Date());
         
         client.post()
         .uri(BaseApiConstants.USER_BASE_URL_V1)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
-        .body(Mono.just(user), User.class)
+        .body(Mono.just(user), UserDTO.class)
         .exchange()
         .expectStatus().isCreated()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBody(User.class).consumeWith(response -> {
-            User userResponse = response.getResponseBody();
+        .expectBody(UserDTO.class).consumeWith(response -> {
+            UserDTO userResponse = response.getResponseBody();
             Assertions.assertThat(userResponse.getId()).isNotNull();
             Assertions.assertThat(userResponse.getId() > 0).isTrue();
             Assertions.assertThat(userResponse.getBirthdate()).isEqualTo(user.getBirthdate());
@@ -101,8 +100,29 @@ public class UserControllerTests {
     }
     
     @Test
+    public void postWithValidationErrorsTest() {
+        UserDTO user = new UserDTO(null, "F", "De", "fu", null);
+        
+        client.post()
+        .uri(BaseApiConstants.USER_BASE_URL_V1)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(Mono.just(user), UserDTO.class)
+        .exchange()
+        .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
+        .expectHeader().contentType(MediaType.APPLICATION_JSON)
+        .expectBody()
+        .jsonPath("$.code").isNotEmpty()
+        .jsonPath("$.code").isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.name())
+        .jsonPath("$.message").isNotEmpty()
+        .jsonPath("$.message").isEqualTo("Validation failure: userDTO")
+        .jsonPath("$.errors").isArray()
+        .jsonPath("$.errors.length()").isEqualTo(5);
+    }
+    
+    @Test
     public void putTest() {
-        User user = userService.findAll().blockFirst();
+        UserDTO user = userService.findAll().blockFirst();
         
         user.setEmail("email@mail.com");
         user.setName("Name");
@@ -111,13 +131,13 @@ public class UserControllerTests {
         client.put()
         .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
         .accept(MediaType.APPLICATION_JSON)
-        .body(Mono.just(user), User.class)
+        .body(Mono.just(user), UserDTO.class)
         .exchange()
         .expectStatus().isCreated()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBody(User.class)
+        .expectBody(UserDTO.class)
         .consumeWith(response -> {
-            User userResponse = response.getResponseBody();
+            UserDTO userResponse = response.getResponseBody();
             Assertions.assertThat(userResponse.getId()).isNotNull();
             Assertions.assertThat(userResponse.getId() > 0).isTrue();
             Assertions.assertThat(userResponse.getId()).isEqualTo(user.getId());
@@ -130,7 +150,7 @@ public class UserControllerTests {
     
     @Test
     public void deleteTest() {
-        User user = userService.findAll().blockFirst();
+        UserDTO user = userService.findAll().blockFirst();
         client.delete()
             .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
             .exchange()

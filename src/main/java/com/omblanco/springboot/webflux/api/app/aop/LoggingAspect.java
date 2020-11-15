@@ -1,6 +1,8 @@
 package com.omblanco.springboot.webflux.api.app.aop;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.UUID;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,28 +20,35 @@ import reactor.core.publisher.Mono;
 /**
  * Registra los errores de la aplicación
  *
+ * see
+ * https://azizulhaq-ananto.medium.com/how-to-handle-logs-and-tracing-in-spring-webflux-and-microservices-a0b45adc4610
  */
 @Aspect
 public class LoggingAspect {
+
+    private static final String LOG_ENTER_PATTERN = "Request uuid: {} -> Enter: {}.{}() with argument[s] = {}";
+    private static final String LOG_EXIT_PATTERN = "Request uuid: {} -> Exit: {}.{}() with result = {}";
+    private static final String LOG_ERROR_ARROUND_PATTERN = "Request uuid: {} -> Illegal argument: {} in {}.{}()";
     
-    private static final String LOG_ERROR_PATTERN = "Error en {}.{}()";
-    private static final String LOG_ERROR_JDBC_PATTERN = "Error en {}.{}.{}.{}()";
+    private static final String LOG_ERROR_PATTERN = "Error in {}.{}()";
+    private static final String LOG_ERROR_JDBC_PATTERN = "Error in {}.{}.{}.{}()";
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
 
     /**
      * Traza correspondiente a un error en la capa de acceso a
+     * 
      * @param joinPoint
-     * @param e Error
+     * @param e         Error
      */
     @AfterThrowing(pointcut = "SystemArchitecture.inDataAccessLayer()", throwing = "e")
     public void logAfterDataAccessThrowing(JoinPoint joinPoint, Throwable e) {
         String typeName = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
         String msg = e.getMessage();
-        
+
         if (e instanceof DataAccessException) {
             int errorCode = 0;
-            
+
             if (e.getCause() instanceof JDBCException) {
                 errorCode = ((JDBCException) e.getCause()).getErrorCode();
             }
@@ -51,28 +60,55 @@ public class LoggingAspect {
 
     /**
      * Trazas de log de entrada/salida/excepción para la capa de servicio.
+     * 
      * @param joinPoint
      * @return el objeto que sería devuelto originalmente en el método.
      * @throws Throwable Excepción lanzada por el método
      */
     @Around("SystemArchitecture.inServiceLayer() || SystemArchitecture.inWebLayer() || SystemArchitecture.inDataAccessLayer()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Enter: {}.{}() with argument[s] = {}", joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
-        }
+
+        String uuid = UUID.randomUUID().toString();
+        
         try {
-            Object result = joinPoint.proceed();
             
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exit: {}.{}() with result = {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint
-                        .getSignature().getName(), result);
+                LOGGER.debug(LOG_ENTER_PATTERN, uuid, joinPoint.getSignature().getDeclaringTypeName(),
+                        joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
+            }
+            
+            Object result = joinPoint.proceed();
+
+            if (LOGGER.isDebugEnabled()) {
+                if (result instanceof Mono) {
+                    var monoResult = (Mono<?>) result;
+
+                    return monoResult.doOnSuccess(o -> {
+                        var response = "";
+                        if (Objects.nonNull(o)) {
+                            response = o.toString();
+                        }
+                        LOGGER.debug(LOG_EXIT_PATTERN, uuid,
+                                joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
+                                response);
+                    });
+                }if (result instanceof Flux) {
+                    var fluxResult = (Flux<?>) result;
+                    return fluxResult.map(fluxItem -> {
+                        LOGGER.debug(LOG_EXIT_PATTERN, uuid, joinPoint.getSignature().getDeclaringTypeName(),
+                                joinPoint.getSignature().getName(), fluxItem);
+                        return fluxItem;
+                    });
+                    
+                } else {
+                    LOGGER.debug(LOG_EXIT_PATTERN, uuid, joinPoint.getSignature().getDeclaringTypeName(),
+                            joinPoint.getSignature().getName(), result);
+                }
             }
             return result;
         } catch (IllegalArgumentException e) {
-            LOGGER.error("Illegal argument: {} in {}.{}()", Arrays.toString(joinPoint.getArgs()), joinPoint.getSignature()
-                    .getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), e);
+            LOGGER.error(LOG_ERROR_ARROUND_PATTERN, uuid, Arrays.toString(joinPoint.getArgs()),
+                    joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), e);
             throw e;
         }
     }

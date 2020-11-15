@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.test.StepVerifier;
 
 /**
@@ -27,39 +27,43 @@ import reactor.test.StepVerifier;
  * @author oscar.martinezblanco
  *
  */
-@Disabled
 public class UserServiceImplTests {
 
     @Mock
     private UserRepository mockUserRepository;
     
     @Mock
-    private Scheduler jdbcScheduler;
+    private ModelMapper modelMapper;
     
     private UserService userService;
     
     @BeforeEach
     public void setUp() {
         initMocks(this);
-        userService = new UserServiceImpl(mockUserRepository, jdbcScheduler);
+        userService = new UserServiceImpl(mockUserRepository, modelMapper);
     }
     
     @Test
     public void findAllTest() {
         //Given:
         User user1 = new User(1L, "John", "Doe", "john@mail.com", new Date());
-        User user2 = new User(1L, "Mary", "Queen", "mary@mail.com", new Date());
+        User user2 = new User(2L, "Mary", "Queen", "mary@mail.com", new Date());
         List<User> users = Arrays.asList(user1, user2);
         
+        UserDTO userDto1 = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
+        UserDTO userDto2 = new UserDTO(2L, "Mary", "Queen", "mary@mail.com", new Date());
+        
         //when:
+        when(modelMapper.map(user1, UserDTO.class)).thenReturn(userDto1);
+        when(modelMapper.map(user2, UserDTO.class)).thenReturn(userDto2);
         when(mockUserRepository.findAll()).thenReturn(users);
         
+        Flux<UserDTO> fluxUsersDto = userService.findAll();
+
         //Then:
-        Flux<User> fluxUsers = userService.findAll();
-        
-        StepVerifier.create(fluxUsers.log()).expectNextCount(2).verifyComplete();
-        StepVerifier.create(fluxUsers.log()).expectNext(user1).expectNext(user2).verifyComplete();
-        StepVerifier.create(fluxUsers.log()).expectNext(user1, user2).verifyComplete();
+        StepVerifier.create(fluxUsersDto.log()).expectNextCount(2).verifyComplete();
+        StepVerifier.create(fluxUsersDto.log()).expectNext(userDto1).expectNext(userDto2).verifyComplete();
+        StepVerifier.create(fluxUsersDto.log()).expectNext(userDto1, userDto2).verifyComplete();
     }
     
     @Test
@@ -67,43 +71,50 @@ public class UserServiceImplTests {
         //Given:
         User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
         
+        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
+        
         //when:
+        when(modelMapper.map(user, UserDTO.class)).thenReturn(userDto);
         when(mockUserRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(mockUserRepository.findById(2L)).thenReturn(Optional.empty());
         
+        Mono<UserDTO> monoUser = userService.findById(user.getId());
+        Mono<UserDTO> monoVoid = userService.findById(2L);
+
         //Then:
-        Mono<User> monoUser = userService.findById(user.getId());
-        Mono<User> monoVoid = userService.findById(2L);
-        
-        StepVerifier.create(monoUser.log()).expectNext(user).verifyComplete();
+        StepVerifier.create(monoUser.log()).expectNext(userDto).verifyComplete();
         StepVerifier.create(monoVoid.log()).verifyComplete();
     }
     
     @Test
     public void saveTest() {
         //Given:
+        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
         User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
         
         //when:
         when(mockUserRepository.save(user)).thenReturn(user);
+        when(modelMapper.map(userDto, User.class)).thenReturn(user);
+        when(modelMapper.map(user, UserDTO.class)).thenReturn(userDto);
         
         //Then:
-        Mono<User> monoUser = userService.save(user);
+        Mono<UserDTO> monoUser = userService.save(userDto);
         
-        StepVerifier.create(monoUser.log()).expectNext(user).verifyComplete();
+        StepVerifier.create(monoUser.log()).expectNext(userDto).verifyComplete();
     }
     
     @Test
     public void deleteTest() {
         //Given:
         User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
+        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
         
         //when:
+        when(modelMapper.map(userDto, User.class)).thenReturn(user);
         doNothing().when(mockUserRepository).delete(user);
+        Mono<Void> monoUser = userService.delete(userDto);
         
         //Then:
-        Mono<Void> monoUser = userService.delete(user);
-        
         StepVerifier.create(monoUser.log()).verifyComplete();
     }
 }

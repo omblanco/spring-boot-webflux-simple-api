@@ -9,6 +9,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
+import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,6 +37,7 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  */
+@AllArgsConstructor
 @Controller
 @RequestMapping(USER_BASE_URL_V1)
 public class UserController {
@@ -43,22 +47,13 @@ public class UserController {
     private UserService userService;
 
     /**
-     * Constructor con el servicio
-     * 
-     * @param userService Servicio de usuarios
-     */
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    /**
      * Recupera todos los usuarios
      * 
      * @return Lista de usuarios
      */
     @GetMapping
     @ResponseBody
-    public Mono<ResponseEntity<Flux<User>>> findAll() {
+    public Mono<ResponseEntity<Flux<UserDTO>>> findAll() {
         return Mono.just(ResponseEntity.ok().contentType(APPLICATION_JSON).body(userService.findAll()));
     }
 
@@ -70,7 +65,7 @@ public class UserController {
      */
     @GetMapping(ID_PARAM_URL)
     @ResponseBody
-    public Mono<ResponseEntity<User>> get(@PathVariable Long id) {
+    public Mono<ResponseEntity<UserDTO>> get(@PathVariable Long id) {
         return userService.findById(id).map(p -> ResponseEntity.ok().contentType(APPLICATION_JSON).body(p))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
@@ -83,7 +78,7 @@ public class UserController {
      */
     @PostMapping
     @ResponseBody
-    public Mono<ResponseEntity<User>> create(@RequestBody Mono<User> monoUser) {
+    public Mono<ResponseEntity<UserDTO>> create(@RequestBody @Valid Mono<UserDTO> monoUser) {
 
         return monoUser.flatMap(user -> {
             return userService.save(user).map(userDb -> {
@@ -91,11 +86,16 @@ public class UserController {
                         .created(URI.create(USER_BASE_URL_V1.concat(FORWARD_SLASH).concat(userDb.getId().toString())))
                         .contentType(APPLICATION_JSON).body(userDb);
             });
-        }).onErrorResume(throwable -> {
-            LOG.error("Error on save user: " + monoUser.block());
-            // TODO:gestionar errores de validación
-            return Mono.just(ResponseEntity.badRequest().build());
         });
+//                .onErrorResume(throwable -> {
+//            
+//            monoUser.map(user -> {
+//                LOG.error("Error on save user: " + user);
+//                return true;
+//            });
+//            // TODO:gestionar errores de validación
+//            return Mono.just(ResponseEntity.badRequest().build());
+//        });
     }
 
     /**
@@ -107,7 +107,7 @@ public class UserController {
      */
     @PutMapping(ID_PARAM_URL)
     @ResponseBody
-    public Mono<ResponseEntity<User>> update(@RequestBody User user, @PathVariable Long id) {
+    public Mono<ResponseEntity<UserDTO>> update(@PathVariable Long id, @Valid @RequestBody UserDTO user) {
 
         return userService.findById(id).flatMap(userDb -> {
 
@@ -138,4 +138,5 @@ public class UserController {
             return userService.delete(userDb).then(Mono.just(new ResponseEntity<Void>(NO_CONTENT)));
         }).defaultIfEmpty(new ResponseEntity<Void>(NOT_FOUND));
     }
+    
 }
