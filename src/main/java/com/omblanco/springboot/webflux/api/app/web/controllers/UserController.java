@@ -11,8 +11,6 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -47,8 +45,6 @@ import reactor.core.publisher.Mono;
 @Controller
 @RequestMapping(USER_BASE_URL_V1)
 public class UserController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private UserService userService;
 
@@ -92,7 +88,6 @@ public class UserController {
     @PostMapping
     @ResponseBody
     public Mono<ResponseEntity<UserDTO>> create(@RequestBody @Valid Mono<UserDTO> monoUser) {
-
         return monoUser.flatMap(user -> {
             return userService.save(user).map(userDb -> {
                 return ResponseEntity
@@ -100,15 +95,6 @@ public class UserController {
                         .contentType(APPLICATION_JSON).body(userDb);
             });
         });
-//                .onErrorResume(throwable -> {
-//            
-//            monoUser.map(user -> {
-//                LOG.error("Error on save user: " + user);
-//                return true;
-//            });
-//            // TODO:gestionar errores de validación
-//            return Mono.just(ResponseEntity.badRequest().build());
-//        });
     }
 
     /**
@@ -121,7 +107,6 @@ public class UserController {
     @PutMapping(ID_PARAM_URL)
     @ResponseBody
     public Mono<ResponseEntity<UserDTO>> update(@PathVariable Long id, @Valid @RequestBody UserDTO user) {
-
         return userService.findById(id).flatMap(userDb -> {
 
             userDb.setBirthdate(user.getBirthdate());
@@ -132,11 +117,9 @@ public class UserController {
             return userService.save(userDb);
         }).map(userDb -> ResponseEntity
                 .created(URI.create(USER_BASE_URL_V1.concat(FORWARD_SLASH).concat(userDb.getId().toString())))
-                .contentType(APPLICATION_JSON).body(userDb)).onErrorResume(throwable -> {
-                    LOG.error("Error on save user: " + user);
-                    // TODO:gestionar errores de validación
-                    return Mono.just(ResponseEntity.badRequest().build());
-                }).defaultIfEmpty(ResponseEntity.notFound().build());
+                .contentType(APPLICATION_JSON)
+                .body(userDb))
+        .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     /**
