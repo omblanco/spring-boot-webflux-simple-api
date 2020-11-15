@@ -1,2 +1,2 @@
-# spring-boot-webflux-basic-api
-Spring Boot &amp; WebFlux Basic Api
+# spring-boot-webflux-simple-api
+Spring Boot &amp; WebFlux Simple Api

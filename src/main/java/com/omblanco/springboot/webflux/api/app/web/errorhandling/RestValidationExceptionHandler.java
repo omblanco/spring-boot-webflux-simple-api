@@ -18,7 +18,6 @@ import org.springframework.web.server.WebExceptionHandler;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.omblanco.springboot.webflux.api.app.SpringBootWebfluxBasicApiApplication;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class RestValidationExceptionHandler implements WebExceptionHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpringBootWebfluxBasicApiApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestValidationExceptionHandler.class);
     
     private final ObjectMapper objectMapper;
 

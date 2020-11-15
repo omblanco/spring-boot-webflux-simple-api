@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Disabled
 @SpringBootTest
-class SpringBootWebfluxBasicApiApplicationTests {
+class SpringBootWebfluxSimpleApiApplicationTests {
 
 	@Test
 	void contextLoads() {
