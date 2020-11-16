@@ -12,13 +12,15 @@
 	</parent>
 
 	<groupId>com.omblanco.springboot.webflux.api</groupId>
-	<artifactId>spring-boot-webflux-basic-api</artifactId>
-	<version>1.1.0</version>
-	<name>spring-boot-webflux-basic-api</name>
+	<artifactId>spring-boot-webflux-simple-api</artifactId>
+	<version>1.2.0</version>
+	<name>spring-boot-webflux-simple-api</name>
 	<description>Aplicación básica para una api rest con WebFlux</description>
 
 	<properties>
 		<java.version>11</java.version>
+		<springfox.version>3.0.0</springfox.version>
+		<modelmapper.version>2.3.8</modelmapper.version>
 	</properties>
 
 	<dependencies>
@@ -73,9 +75,17 @@
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>2.3.8</version>
+			<version>${modelmapper.version}</version>
 		</dependency>
-
+		
+		<!-- swagger -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+		<!-- ./swagger -->
+		
 		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

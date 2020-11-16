@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class SpringBootWebfluxBasicApiApplication {
+public class SpringBootWebfluxSimpleApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootWebfluxBasicApiApplication.class, args);
+        SpringApplication.run(SpringBootWebfluxSimpleApiApplication.class, args);
     }
 }

@@ -1,6 +1,10 @@
 package com.omblanco.springboot.webflux.api.app.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,6 +21,14 @@ public interface UserService {
      * @return Flux de usuarios
      */
     Flux<UserDTO> findAll();
+    
+    /**
+     * Recupera usuarios paginados y filtrados
+     * @param filter Filtro de búsqueda
+     * @param pageable Paginación
+     * @return Mono de página de usuarios
+     */
+    Mono<Page<UserDTO>> findByFilter(UserFilterDTO filter, Pageable pageable);
     
     /**
      * Busca un usuario por la clave

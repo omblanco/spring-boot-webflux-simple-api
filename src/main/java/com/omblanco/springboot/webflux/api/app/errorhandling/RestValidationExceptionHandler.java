@@ -1,8 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.web.errorhandling;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+package com.omblanco.springboot.webflux.api.app.errorhandling;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +11,10 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.omblanco.springboot.webflux.api.app.SpringBootWebfluxBasicApiApplication;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import reactor.core.publisher.Mono;
 
 /**
@@ -39,7 +31,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class RestValidationExceptionHandler implements WebExceptionHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpringBootWebfluxBasicApiApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestValidationExceptionHandler.class);
     
     private final ObjectMapper objectMapper;
 
@@ -50,7 +42,7 @@ public class RestValidationExceptionHandler implements WebExceptionHandler {
 
             LOG.debug("Excepción de validación", ex);
             
-            var errors = new Errors(HttpStatus.UNPROCESSABLE_ENTITY.name(), 
+            ValidationErrorsResponse errors = new ValidationErrorsResponse(HttpStatus.UNPROCESSABLE_ENTITY.name(), 
                     webExchangeBindException.getReason().concat(": ")
                     .concat(webExchangeBindException.getObjectName().replace("Mono", "")));
             
@@ -69,41 +61,4 @@ public class RestValidationExceptionHandler implements WebExceptionHandler {
         }
         return Mono.error(ex);
     }
-}
-
-@Getter
-@ToString
-class Errors implements Serializable {
-    private static final long serialVersionUID = -646517201289834673L;
-    private String code;
-    private String message;
-    private List<Error> errors = new ArrayList<>();
-
-    @JsonCreator
-    Errors(String code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public void add(String path, String code, String message) {
-        this.errors.add(new Error(path, code, message));
-    }
-}
-
-@Getter
-@ToString
-class Error implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    private String path;
-    private String code;
-    private String message;
-
-    @JsonCreator
-    Error(String path, String code, String message) {
-        this.path = path;
-        this.code = code;
-        this.message = message;
-    }
-
 }
