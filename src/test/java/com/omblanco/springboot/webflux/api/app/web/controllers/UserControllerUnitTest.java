@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -28,12 +29,19 @@ import com.omblanco.springboot.webflux.api.app.ModelMapperConfig;
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
 import com.omblanco.springboot.webflux.api.app.services.UserServiceImpl;
-import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
 
 import reactor.core.publisher.Mono;
 
-
-@WebFluxTest(controllers = UserController.class)
+/**
+ * Test unitarios para los controllers
+ * @author oscar.martinezblanco
+ *
+ *  see https://www.baeldung.com/parameterized-tests-junit-5
+ *
+ */
+@WebFluxTest(controllers = {UserController.class, UserRestController.class})
 @Import({UserServiceImpl.class, ModelMapperConfig.class})
 public class UserControllerUnitTest {
     
@@ -43,15 +51,16 @@ public class UserControllerUnitTest {
     @Autowired
     WebTestClient webTestClient;
     
-    @Test
-    public void findAllTest() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
+    public void findAllTest(String path) throws Exception {
         //given:
         User user1 = new User(1L, "John", "Doe", "john@mail.com", new Date());
         User user2 = new User(1L, "Mary", "Queen", "mary@mail.com", new Date());
         
         //when:
         when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
-        webTestClient.get().uri(BaseApiConstants.USER_BASE_URL_V1)
+        webTestClient.get().uri(path)
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk()
@@ -72,9 +81,10 @@ public class UserControllerUnitTest {
         verify(userRepository, times(1)).findAll();
     }
     
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
     @SuppressWarnings("unchecked")
-    @Test
-    public void findFyFilterTest() {
+    public void findFyFilterTest(String path) {
         //given
         User user = new User(1L, "Maria", "Doe", "john@mail.com", new Date());
         
@@ -88,7 +98,7 @@ public class UserControllerUnitTest {
         when(userRepository.findAll(ArgumentMatchers.any(Specification.class), ArgumentMatchers.any())).thenReturn(pageUsers);
         webTestClient.get().uri(uriBuilder ->
             uriBuilder
-            .path(BaseApiConstants.USER_BASE_URL_V1)
+            .path(path)
             .queryParam("page", page)
             .queryParam("size", size)
             .queryParam("name", name)
@@ -109,8 +119,9 @@ public class UserControllerUnitTest {
         verify(userRepository, times(1)).findAll(ArgumentMatchers.any(Specification.class), ArgumentMatchers.any());
     }    
     
-    @Test
-    public void getByidTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
+    public void getByidTest(String path) {
         //given:
         User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
         Optional<User> optionalUser = Optional.of(user);
@@ -120,7 +131,7 @@ public class UserControllerUnitTest {
         
         //then:
         webTestClient.get()
-        .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
+        .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))
         .accept(MediaType.APPLICATION_JSON)
         .exchange()
         .expectStatus().isOk()
@@ -143,15 +154,17 @@ public class UserControllerUnitTest {
         verify(userRepository, times(1)).findById(user.getId());
     }
     
-    @Test
-    public void postTest() {
+    
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
+    public void postTest(String path) {
         //given:
         User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
         
         //when
         when(userRepository.save(user)).thenReturn(user);
         webTestClient.post()
-        .uri(BaseApiConstants.USER_BASE_URL_V1)
+        .uri(path)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(Mono.just(user), User.class)
@@ -174,8 +187,9 @@ public class UserControllerUnitTest {
         verify(userRepository, times(1)).save(user);
     }
     
-    @Test
-    public void putTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
+    public void putTest(String path) {
         //given:
         User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
         Optional<User> optionalUser = Optional.of(user);
@@ -185,7 +199,7 @@ public class UserControllerUnitTest {
         when(userRepository.save(user)).thenReturn(user);
        
         webTestClient.put()
-        .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
+        .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))
         .accept(MediaType.APPLICATION_JSON)
         .body(Mono.just(user), User.class)
         .exchange()
@@ -209,8 +223,9 @@ public class UserControllerUnitTest {
         verify(userRepository, times(1)).save(user);
     }
     
-    @Test
-    public void deleteTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
+    public void deleteTest(String path) {
         //given:
         User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
         Optional<User> optionalUser = Optional.of(user);
@@ -219,7 +234,7 @@ public class UserControllerUnitTest {
         when(userRepository.findById(user.getId())).thenReturn(optionalUser);
         when(userRepository.save(user)).thenReturn(user);
         webTestClient.delete()
-            .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
+            .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))
             .exchange()
             .expectStatus().isNoContent()
             .expectBody().isEmpty();

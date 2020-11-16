@@ -1,11 +1,16 @@
 package com.omblanco.springboot.webflux.api.app.web.controllers;
 
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V3;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +27,8 @@ import reactor.core.publisher.Mono;
 /**
  * Test de integración para el UserController
  * @author oscar.martinezblanco
+ * 
+ * see https://www.baeldung.com/parameterized-tests-junit-5
  *
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -34,10 +41,11 @@ public class UserControllerTests {
     @Autowired
     private UserService userService;
     
-    @Test
-    public void findAllTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
+    public void findAllTest(String path) throws Exception {
         client.get()
-        .uri(BaseApiConstants.USER_BASE_URL_V1)
+        .uri(path)
         .accept(MediaType.APPLICATION_JSON)
         .exchange().expectStatus()
         .isOk()
@@ -53,15 +61,16 @@ public class UserControllerTests {
         });
     }
     
-    @Test
-    public void findFyFilterTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
+    public void findFyFilterTest(String path) {
         String name = "Maria";
         Integer page = 0;
         Integer size = 10;
         
         client.get().uri(uriBuilder ->
             uriBuilder
-            .path(BaseApiConstants.USER_BASE_URL_V1)
+            .path(path)
             .queryParam("page", page)
             .queryParam("size", size)
             .queryParam("name", name)
@@ -78,12 +87,13 @@ public class UserControllerTests {
         .jsonPath("$.content[0].name").isEqualTo(name);
     }
     
-    @Test
-    public void getByidTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
+    public void getByidTest(String path) {
         UserDTO user = userService.findAll().blockFirst();
         
         client.get()
-        .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
+        .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))
         .accept(MediaType.APPLICATION_JSON)
         .exchange()
         .expectStatus().isOk()
@@ -101,12 +111,13 @@ public class UserControllerTests {
         });
     }
     
-    @Test
-    public void postTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
+    public void postTest(String path) {
         UserDTO user = new UserDTO(null, "Fulano", "De tal", "fulano@mail.com", new Date());
         
         client.post()
-        .uri(BaseApiConstants.USER_BASE_URL_V1)
+        .uri(path)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(Mono.just(user), UserDTO.class)
@@ -124,12 +135,13 @@ public class UserControllerTests {
         });
     }
     
-    @Test
-    public void postWithValidationErrorsTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
+    public void postWithValidationErrorsTest(String path) {
         UserDTO user = new UserDTO(null, "F", "De", "fu", null);
         
         client.post()
-        .uri(BaseApiConstants.USER_BASE_URL_V1)
+        .uri(path)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(Mono.just(user), UserDTO.class)
@@ -145,8 +157,9 @@ public class UserControllerTests {
         .jsonPath("$.errors.length()").isEqualTo(5);
     }
     
-    @Test
-    public void putTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
+    public void putTest(String path) {
         UserDTO user = userService.findAll().blockFirst();
         
         user.setEmail("email@mail.com");
@@ -154,7 +167,7 @@ public class UserControllerTests {
         user.setSurname("Surname");
         
         client.put()
-        .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
+        .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))
         .accept(MediaType.APPLICATION_JSON)
         .body(Mono.just(user), UserDTO.class)
         .exchange()
@@ -173,11 +186,12 @@ public class UserControllerTests {
         });
     }
     
-    @Test
-    public void deleteTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
+    public void deleteTest(String path) {
         UserDTO user = userService.findAll().blockFirst();
         client.delete()
-            .uri(BaseApiConstants.USER_BASE_URL_V1.concat("/{id}"), Collections.singletonMap("id", user.getId()))
+            .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))
             .exchange()
             .expectStatus().isNoContent()
             .expectBody().isEmpty();
