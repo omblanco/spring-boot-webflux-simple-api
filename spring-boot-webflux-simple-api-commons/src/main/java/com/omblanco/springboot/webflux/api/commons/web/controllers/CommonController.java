@@ -75,6 +75,7 @@ public abstract class CommonController <D extends CommonDTO, E, S extends Common
     @ResponseBody
     public Mono<ResponseEntity<D>> create(@RequestBody @Valid Mono<D> monoDto) {
         return monoDto.flatMap(dto -> {
+            dto.setId(null);
             return service.save(dto).map(dtoDb -> {
                 
                 return ResponseEntity
