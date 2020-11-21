@@ -15,6 +15,16 @@
 	<description>Aplicación básica para una api rest con WebFlux</description>
 
 	<dependencies>
+		
+		<!-- simple-api -->
+		<dependency>
+			<groupId>com.omblanco.springboot.webflux.api</groupId>
+			<artifactId>
+				spring-boot-webflux-simple-api-commons
+			</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<!-- ./simple-api -->
 
 		<!-- Devtools -->
 		<dependency>

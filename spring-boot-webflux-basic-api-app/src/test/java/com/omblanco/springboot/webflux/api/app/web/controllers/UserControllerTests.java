@@ -152,7 +152,9 @@ public class UserControllerTests {
         .jsonPath("$.code").isNotEmpty()
         .jsonPath("$.code").isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.name())
         .jsonPath("$.message").isNotEmpty()
-        .jsonPath("$.message").isEqualTo("Validation failure: userDTO")
+        .jsonPath("$.message").value(message -> {
+            Assertions.assertThat(message.toString()).contains("Validation failure");
+        })
         .jsonPath("$.errors").isArray()
         .jsonPath("$.errors.length()").isEqualTo(5);
     }

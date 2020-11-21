@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
+import com.omblanco.springboot.webflux.api.commons.web.handler.CommonHandler;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -32,7 +33,7 @@ import reactor.core.publisher.Mono;
  */
 @AllArgsConstructor
 @Component
-public class UserHandler extends BaseHandler {
+public class UserHandler extends CommonHandler {
 
     protected static final String NAME_PARAM_NAME = "name";
     protected static final String SURNAME_PARAM_NAME = "surname";

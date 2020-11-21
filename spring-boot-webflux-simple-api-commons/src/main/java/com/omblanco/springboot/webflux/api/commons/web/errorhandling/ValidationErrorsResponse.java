@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.errorhandling;
+package com.omblanco.springboot.webflux.api.commons.web.errorhandling;
 
 import java.io.Serializable;
 import java.util.ArrayList;

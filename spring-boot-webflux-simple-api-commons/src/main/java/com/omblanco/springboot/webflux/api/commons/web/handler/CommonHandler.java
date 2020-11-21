@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.handler;
+package com.omblanco.springboot.webflux.api.commons.web.handler;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
@@ -16,8 +16,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.omblanco.springboot.webflux.api.app.errorhandling.ValidationError;
-import com.omblanco.springboot.webflux.api.app.errorhandling.ValidationErrorsResponse;
+import com.omblanco.springboot.webflux.api.commons.web.errorhandling.ValidationError;
+import com.omblanco.springboot.webflux.api.commons.web.errorhandling.ValidationErrorsResponse;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  */
-public abstract class BaseHandler {
+public abstract class CommonHandler {
 
     protected static final String PAGE_PARAM_NAME = "page";
     protected static final String SIZE_PARAM_NAME = "size";
