@@ -16,9 +16,9 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.omblanco.springboot.webflux.api.app.handler.AuthHandler;
-import com.omblanco.springboot.webflux.api.app.handler.UserHandler;
 import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
+import com.omblanco.springboot.webflux.api.app.web.handler.AuthHandler;
+import com.omblanco.springboot.webflux.api.app.web.handler.UserHandler;
 
 /**
  * Configuración para los Functional Endpoints de usuario

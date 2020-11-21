@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.handler;
+package com.omblanco.springboot.webflux.api.app.web.handler;
 
 import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.FORWARD_SLASH;
 import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.ID_PARAM_NAME;

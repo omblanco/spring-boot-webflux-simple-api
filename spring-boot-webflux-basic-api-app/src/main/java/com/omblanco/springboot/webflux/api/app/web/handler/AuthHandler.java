@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.handler;
+package com.omblanco.springboot.webflux.api.app.web.handler;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
