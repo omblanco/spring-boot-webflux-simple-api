@@ -1,5 +1,7 @@
 package com.omblanco.springboot.webflux.api.app.model.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,4 +23,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return Página de usuarios
      */
     Page<User> findAll(Specification<User> specification, Pageable pageable);
+    
+    /**
+     * Busca un usuario por email
+     * @param email email
+     * @return Usuario
+     */
+    Optional<User> findByEmail(String email);
 }

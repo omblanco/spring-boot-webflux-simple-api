@@ -50,4 +50,11 @@ public interface UserService {
      * @return
      */
     Mono<Void> delete(UserDTO userDto);
+    
+    /**
+     * Busca un usuario por email
+     * @param email Email
+     * @return Usuario
+     */
+    Mono<UserDTO> findByEmail(String email);
 }

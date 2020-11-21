@@ -1,5 +1,7 @@
 package com.omblanco.springboot.webflux.api.app.web.controllers;
 
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,14 +25,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.omblanco.springboot.webflux.api.app.ModelMapperConfig;
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
+import com.omblanco.springboot.webflux.api.app.security.AuthenticationManager;
+import com.omblanco.springboot.webflux.api.app.security.SecurityConfig;
+import com.omblanco.springboot.webflux.api.app.security.SecurityContextRepository;
+import com.omblanco.springboot.webflux.api.app.security.TokenProvider;
 import com.omblanco.springboot.webflux.api.app.services.UserServiceImpl;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
+import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
 import reactor.core.publisher.Mono;
 
@@ -42,11 +48,15 @@ import reactor.core.publisher.Mono;
  *
  */
 @WebFluxTest(controllers = {UserController.class, UserRestController.class})
-@Import({UserServiceImpl.class, ModelMapperConfig.class})
+@Import({ UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, AuthenticationManager.class,
+        TokenProvider.class, SecurityContextRepository.class})
 public class UserControllerUnitTest {
     
     @MockBean
     private UserRepository userRepository;
+    
+    @MockBean
+    private BCryptPasswordEncoder passwordEncoder;
     
     @Autowired
     WebTestClient webTestClient;
@@ -55,8 +65,8 @@ public class UserControllerUnitTest {
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
     public void findAllTest(String path) throws Exception {
         //given:
-        User user1 = new User(1L, "John", "Doe", "john@mail.com", new Date());
-        User user2 = new User(1L, "Mary", "Queen", "mary@mail.com", new Date());
+        User user1 = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
+        User user2 = new User(1L, "Mary", "Queen", "mary@mail.com", new Date(), "1234");
         
         //when:
         when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
@@ -64,17 +74,21 @@ public class UserControllerUnitTest {
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk()
-            .expectBodyList(User.class)
+            .expectBodyList(UserDTO.class)
             .consumeWith(response -> {
-                List<User> users = response.getResponseBody();
+                List<UserDTO> users = response.getResponseBody();
                 users.forEach(user -> {
                     System.out.println(user);
                 });
                 
                 //then:
                 assertThat(users.size() == 2).isTrue();
-                assertThat(user1).isEqualTo(users.get(0));
-                assertThat(user2).isEqualTo(users.get(1));
+                assertThat(user1.getId()).isEqualTo(users.get(0).getId());
+                assertThat(user1.getName()).isEqualTo(users.get(0).getName());
+                assertThat(user1.getSurname()).isEqualTo(users.get(0).getSurname());
+                assertThat(user2.getId()).isEqualTo(users.get(1).getId());
+                assertThat(user2.getName()).isEqualTo(users.get(1).getName());
+                assertThat(user2.getSurname()).isEqualTo(users.get(1).getSurname());
             });
         
         //then:
@@ -86,7 +100,7 @@ public class UserControllerUnitTest {
     @SuppressWarnings("unchecked")
     public void findFyFilterTest(String path) {
         //given
-        User user = new User(1L, "Maria", "Doe", "john@mail.com", new Date());
+        User user = new User(1L, "Maria", "Doe", "john@mail.com", new Date(), "1234");
         
         String name = "Maria";
         Integer page = 0;
@@ -123,7 +137,7 @@ public class UserControllerUnitTest {
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
     public void getByidTest(String path) {
         //given:
-        User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
+        User user = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         Optional<User> optionalUser = Optional.of(user);
         
         //when:
@@ -136,11 +150,11 @@ public class UserControllerUnitTest {
         .exchange()
         .expectStatus().isOk()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBody(User.class)
+        .expectBody(UserDTO.class)
         .consumeWith(response -> {
             
             //then:
-            User userResponse = response.getResponseBody();
+            UserDTO userResponse = response.getResponseBody();
             assertThat(userResponse.getId()).isNotNull();
             assertThat(userResponse.getId() > 0).isTrue();
             assertThat(userResponse.getId()).isEqualTo(user.getId());
@@ -159,22 +173,24 @@ public class UserControllerUnitTest {
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
     public void postTest(String path) {
         //given:
-        User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
+        UserDTO userDtoRequest = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
+        User user = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         
         //when
-        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.save(ArgumentMatchers.any(User.class))).thenReturn(user);
+        when(passwordEncoder.encode(userDtoRequest.getPassword())).thenReturn("encodePassword");
         webTestClient.post()
         .uri(path)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
-        .body(Mono.just(user), User.class)
+        .body(Mono.just(userDtoRequest), UserDTO.class)
         .exchange()
         .expectStatus().isCreated()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBody(User.class).consumeWith(response -> {
+        .expectBody(UserDTO.class).consumeWith(response -> {
             
             //then:
-            User userResponse = response.getResponseBody();
+            UserDTO userResponse = response.getResponseBody();
             Assertions.assertThat(userResponse.getId()).isNotNull();
             Assertions.assertThat(userResponse.getId() > 0).isTrue();
             Assertions.assertThat(userResponse.getBirthdate()).isEqualTo(user.getBirthdate());
@@ -184,31 +200,33 @@ public class UserControllerUnitTest {
         });
         
         //then:
-        verify(userRepository, times(1)).save(user);
+        verify(userRepository, times(1)).save(ArgumentMatchers.any(User.class));
     }
     
     @ParameterizedTest
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
     public void putTest(String path) {
         //given:
-        User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
+        UserDTO userDtoRequest = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
+        User user = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         Optional<User> optionalUser = Optional.of(user);
         
         //when:
         when(userRepository.findById(user.getId())).thenReturn(optionalUser);
-        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.save(ArgumentMatchers.any(User.class))).thenReturn(user);
+        when(passwordEncoder.encode(user.getPassword())).thenReturn("encodePassword");
        
         webTestClient.put()
         .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))
         .accept(MediaType.APPLICATION_JSON)
-        .body(Mono.just(user), User.class)
+        .body(Mono.just(userDtoRequest), UserDTO.class)
         .exchange()
         .expectStatus().isCreated()
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBody(User.class)
+        .expectBody(UserDTO.class)
         .consumeWith(response -> {
             //then:
-            User userResponse = response.getResponseBody();
+            UserDTO userResponse = response.getResponseBody();
             Assertions.assertThat(userResponse.getId()).isNotNull();
             Assertions.assertThat(userResponse.getId() > 0).isTrue();
             Assertions.assertThat(userResponse.getId()).isEqualTo(user.getId());
@@ -216,18 +234,19 @@ public class UserControllerUnitTest {
             Assertions.assertThat(userResponse.getEmail()).isEqualTo(user.getEmail());
             Assertions.assertThat(userResponse.getName()).isEqualTo(user.getName());
             Assertions.assertThat(userResponse.getSurname()).isEqualTo(user.getSurname());
+            Assertions.assertThat(userResponse.getPassword()).isEqualTo(user.getPassword());
         });
         
         //then:
         verify(userRepository, times(1)).findById(user.getId());
-        verify(userRepository, times(1)).save(user);
+        verify(userRepository, times(1)).save(ArgumentMatchers.any(User.class));
     }
     
     @ParameterizedTest
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2})
     public void deleteTest(String path) {
         //given:
-        User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
+        User user = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         Optional<User> optionalUser = Optional.of(user);
         
         //when:

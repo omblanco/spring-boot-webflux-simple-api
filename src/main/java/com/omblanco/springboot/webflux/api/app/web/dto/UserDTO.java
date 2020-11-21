@@ -43,4 +43,8 @@ public class UserDTO {
     @NotNull
     @Past
     private Date birthdate;
+    
+    @NotNull
+    @Size(min = 4, max = 25)
+    private String password;
 }

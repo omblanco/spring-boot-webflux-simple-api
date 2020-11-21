@@ -114,7 +114,7 @@ public class UserControllerTests {
     @ParameterizedTest
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
     public void postTest(String path) {
-        UserDTO user = new UserDTO(null, "Fulano", "De tal", "fulano@mail.com", new Date());
+        UserDTO user = new UserDTO(null, "Fulano", "De tal", "fulano@mail.com", new Date(), "1234");
         
         client.post()
         .uri(path)
@@ -138,7 +138,7 @@ public class UserControllerTests {
     @ParameterizedTest
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
     public void postWithValidationErrorsTest(String path) {
-        UserDTO user = new UserDTO(null, "F", "De", "fu", null);
+        UserDTO user = new UserDTO(null, "F", "De", "fu", null, "1234");
         
         client.post()
         .uri(path)
@@ -165,6 +165,7 @@ public class UserControllerTests {
         user.setEmail("email@mail.com");
         user.setName("Name");
         user.setSurname("Surname");
+        user.setPassword("1234");
         
         client.put()
         .uri(path.concat("/{id}"), Collections.singletonMap("id", user.getId()))

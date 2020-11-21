@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
@@ -35,23 +36,26 @@ public class UserServiceImplTests {
     @Mock
     private ModelMapper modelMapper;
     
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
+    
     private UserService userService;
     
     @BeforeEach
     public void setUp() {
         initMocks(this);
-        userService = new UserServiceImpl(mockUserRepository, modelMapper);
+        userService = new UserServiceImpl(mockUserRepository, modelMapper, passwordEncoder);
     }
     
     @Test
     public void findAllTest() {
         //Given:
-        User user1 = new User(1L, "John", "Doe", "john@mail.com", new Date());
-        User user2 = new User(2L, "Mary", "Queen", "mary@mail.com", new Date());
+        User user1 = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
+        User user2 = new User(2L, "Mary", "Queen", "mary@mail.com", new Date(), "1234");
         List<User> users = Arrays.asList(user1, user2);
         
-        UserDTO userDto1 = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
-        UserDTO userDto2 = new UserDTO(2L, "Mary", "Queen", "mary@mail.com", new Date());
+        UserDTO userDto1 = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
+        UserDTO userDto2 = new UserDTO(2L, "Mary", "Queen", "mary@mail.com", new Date(), "1234");
         
         //when:
         when(modelMapper.map(user1, UserDTO.class)).thenReturn(userDto1);
@@ -69,9 +73,9 @@ public class UserServiceImplTests {
     @Test
     public void findByIdTest() {
         //Given:
-        User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
+        User user = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         
-        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
+        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         
         //when:
         when(modelMapper.map(user, UserDTO.class)).thenReturn(userDto);
@@ -89,8 +93,8 @@ public class UserServiceImplTests {
     @Test
     public void saveTest() {
         //Given:
-        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
-        User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
+        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
+        User user = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         
         //when:
         when(mockUserRepository.save(user)).thenReturn(user);
@@ -106,8 +110,8 @@ public class UserServiceImplTests {
     @Test
     public void deleteTest() {
         //Given:
-        User user = new User(1L, "John", "Doe", "john@mail.com", new Date());
-        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date());
+        User user = new User(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
+        UserDTO userDto = new UserDTO(1L, "John", "Doe", "john@mail.com", new Date(), "1234");
         
         //when:
         when(modelMapper.map(userDto, User.class)).thenReturn(user);

@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     
     private ModelMapper modelMapper;
+    
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public Flux<UserDTO> findAll() {
@@ -62,6 +65,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<UserDTO> save(UserDTO userDto) {
         
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        
         return Mono.defer(() -> Mono.just(convertToDto(userRepository.save(convertToEntity(userDto)))))
                 .subscribeOn(Schedulers.boundedElastic());
     }
@@ -73,6 +78,17 @@ public class UserServiceImpl implements UserService {
             return Mono.empty();
         }).subscribeOn(Schedulers.boundedElastic()).then();
     } 
+    
+    @Override
+    public Mono<UserDTO> findByEmail(String email) {
+        return Mono.defer(() -> Mono.just(userRepository.findByEmail(email))).flatMap(optional -> {
+            if (optional.isPresent()) {
+                return Mono.just(convertToDto(optional.get()));
+            }
+            
+            return Mono.empty();
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
     
     /**
      * Conversión de Modelo a DTO

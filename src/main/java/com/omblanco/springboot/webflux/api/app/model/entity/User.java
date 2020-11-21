@@ -44,4 +44,7 @@ public class User {
     
     @Column(nullable = false)
     private Date birthdate;
+    
+    @Column(length = 60, nullable = false)
+    private String password;
 }
