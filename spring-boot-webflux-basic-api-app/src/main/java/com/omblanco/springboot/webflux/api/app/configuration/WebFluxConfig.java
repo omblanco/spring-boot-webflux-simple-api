@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app;
+package com.omblanco.springboot.webflux.api.app.configuration;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;

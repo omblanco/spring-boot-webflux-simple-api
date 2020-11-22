@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app;
+package com.omblanco.springboot.webflux.api.app.configuration;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
