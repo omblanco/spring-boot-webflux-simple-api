@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
 import com.omblanco.springboot.webflux.api.app.web.dto.LoginRequestDTO;
 import com.omblanco.springboot.webflux.api.app.web.dto.LoginResponseDTO;
@@ -31,14 +31,12 @@ import reactor.core.publisher.Mono;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureWebTestClient
+@AutoConfigureTestDatabase
 @ActiveProfiles(profiles = "security")
 public class AuthHandlerTests {
 
     @Autowired
     private WebTestClient client;
-    
-    @Autowired
-    private UserService userService;
     
     @ParameterizedTest
     @ValueSource(strings = {USER_BASE_URL_V1, USER_BASE_URL_V2, USER_BASE_URL_V3})
