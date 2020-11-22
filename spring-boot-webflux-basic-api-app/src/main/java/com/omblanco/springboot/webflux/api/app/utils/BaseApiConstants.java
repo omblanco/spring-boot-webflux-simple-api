@@ -11,6 +11,8 @@ public class BaseApiConstants {
         //Empty
     }
     
+    public static final String AUTH_URL_V1 = "/auth/login";
+    
     public static final String USER_BASE_URL_V1 = "/api/v1/users";
     
     public static final String USER_BASE_URL_V2 = "/api/v2/users";

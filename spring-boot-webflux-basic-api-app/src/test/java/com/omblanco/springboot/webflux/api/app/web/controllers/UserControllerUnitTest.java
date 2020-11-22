@@ -48,7 +48,7 @@ import reactor.core.publisher.Mono;
  *
  */
 @WebFluxTest(controllers = {UserController.class, UserRestController.class})
-@Import({ UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, AuthenticationManager.class,
+@Import({UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, AuthenticationManager.class,
         TokenProvider.class, SecurityContextRepository.class})
 public class UserControllerUnitTest {
     

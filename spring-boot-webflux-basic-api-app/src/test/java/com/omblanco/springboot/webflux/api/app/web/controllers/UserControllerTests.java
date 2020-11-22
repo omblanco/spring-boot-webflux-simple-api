@@ -34,7 +34,7 @@ import reactor.core.publisher.Mono;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureWebTestClient
 public class UserControllerTests {
-
+    
     @Autowired
     private WebTestClient client;
     

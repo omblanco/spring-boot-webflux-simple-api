@@ -90,11 +90,13 @@ public class UserHandler extends CommonHandler {
         
         return user.flatMap(userDto -> {
             Errors errors = new BeanPropertyBindingResult(userDto, UserDTO.class.getName());
+            
             validator.validate(userDto, errors);
             
             if(errors.hasErrors()) {
                 return validationErrorsResponse(errors, VALIDATION_MESSAGE);
             } else {
+                userDto.setId(null);
                 return userService.save(userDto).flatMap(userDB -> 
                     ServerResponse.created(URI.create(USER_BASE_URL_V3.concat(FORWARD_SLASH).concat(userDB.getId().toString())))
                     .contentType(APPLICATION_JSON)
