@@ -21,7 +21,7 @@ import com.omblanco.springboot.webflux.api.commons.services.CommonService;
 import com.omblanco.springboot.webflux.api.commons.web.dto.CommonDTO;
 
 import lombok.AllArgsConstructor;
-import reactor.core.publisher.Flux;
+import reactor.core.CorePublisher;
 import reactor.core.publisher.Mono;
 
 /**
@@ -29,6 +29,7 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  * @param <D> Clase DTO
+ * @param <F> Clase Filter
  * @param <E> Clase Entity
  * @param <S> Clase del servicio
  */
@@ -45,9 +46,8 @@ public abstract class CommonController <D extends CommonDTO, E, S extends Common
      * Recupera una lista de dtos
      * @return Lista de dtos
      */
-    @GetMapping
     @ResponseBody
-    public Mono<ResponseEntity<Flux<D>>> findAll() {
+    protected Mono<ResponseEntity<CorePublisher<?>>> findAll() {
         return Mono.just(ResponseEntity.ok().contentType(APPLICATION_JSON).body(service.findAll()));
     }
     

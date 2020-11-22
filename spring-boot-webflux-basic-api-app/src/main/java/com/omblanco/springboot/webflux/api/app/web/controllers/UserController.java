@@ -3,10 +3,8 @@ package com.omblanco.springboot.webflux.api.app.web.controllers;
 import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +19,7 @@ import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.commons.web.controllers.CommonController;
 
 import lombok.Builder;
+import reactor.core.CorePublisher;
 import reactor.core.publisher.Mono;
 
 /**
@@ -44,12 +43,17 @@ public class UserController extends CommonController<UserDTO, User, UserService>
      * @param pageable Paginación y ordenación
      * @return Página de usuarios
      */
-    @GetMapping(params = {"page", "size"})
+    @GetMapping
     @ResponseBody
-    public Mono<ResponseEntity<Mono<Page<UserDTO>>>> findByFilter(UserFilterDTO filter,
-            @SortDefault(sort = "id", direction = Sort.Direction.DESC) @PageableDefault(value = 10) Pageable pageable) {
+    public Mono<ResponseEntity<CorePublisher<?>>> findByFilter(UserFilterDTO filter,
+            @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Long size, Long page) {
+        
+        if (size == null & page == null) {
+            return super.findAll();
+        }
+        
         return Mono.just(ResponseEntity.ok().contentType(APPLICATION_JSON).body(service.findByFilter(filter, pageable)));
-    }    
+    }
 
     @Override
     protected String getBaseUrl() {
