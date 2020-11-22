@@ -1,5 +1,8 @@
 package com.omblanco.springboot.webflux.api.app;
 
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.AUTH_URL_V1;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.ID_PARAM_URL;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V3;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
@@ -16,9 +19,8 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.omblanco.springboot.webflux.api.app.handler.AuthHandler;
-import com.omblanco.springboot.webflux.api.app.handler.UserHandler;
-import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
+import com.omblanco.springboot.webflux.api.app.web.handler.AuthHandler;
+import com.omblanco.springboot.webflux.api.app.web.handler.UserHandler;
 
 /**
  * Configuración para los Functional Endpoints de usuario
@@ -36,16 +38,16 @@ public class UserRouterFunctionConfig {
     
     @Bean
     public RouterFunction<ServerResponse> routes() {
-        return route(GET(BaseApiConstants.USER_BASE_URL_V3), userHandler::findAll)
-                .andRoute(GET(BaseApiConstants.USER_BASE_URL_V3.concat(BaseApiConstants.ID_PARAM_URL)), userHandler::get)
-                .andRoute(POST(BaseApiConstants.USER_BASE_URL_V3).and(contentType(APPLICATION_JSON)), userHandler::create)
-                .andRoute(PUT(BaseApiConstants.USER_BASE_URL_V3.concat(BaseApiConstants.ID_PARAM_URL)).and(contentType(APPLICATION_JSON)), userHandler::update)
-                .andRoute(DELETE(BaseApiConstants.USER_BASE_URL_V3.concat(BaseApiConstants.ID_PARAM_URL)), userHandler::delete);
+        return route(GET(USER_BASE_URL_V3), userHandler::findAll)
+                .andRoute(GET(USER_BASE_URL_V3.concat(ID_PARAM_URL)), userHandler::get)
+                .andRoute(POST(USER_BASE_URL_V3).and(contentType(APPLICATION_JSON)), userHandler::create)
+                .andRoute(PUT(USER_BASE_URL_V3.concat(ID_PARAM_URL)).and(contentType(APPLICATION_JSON)), userHandler::update)
+                .andRoute(DELETE(USER_BASE_URL_V3.concat(ID_PARAM_URL)), userHandler::delete);
     }
     
     @Bean
     public RouterFunction<ServerResponse> authRoutes() {
         return RouterFunctions
-                .route(POST("/auth/login").and(accept(APPLICATION_JSON)), authHandler::login);
+                .route(POST(AUTH_URL_V1).and(accept(APPLICATION_JSON)), authHandler::login);
     }
 }

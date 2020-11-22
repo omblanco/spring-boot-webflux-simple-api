@@ -28,7 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.omblanco.springboot.webflux.api.app.ModelMapperConfig;
+import com.omblanco.springboot.webflux.api.app.configuration.ModelMapperConfig;
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
 import com.omblanco.springboot.webflux.api.app.security.AuthenticationManager;
@@ -48,7 +48,7 @@ import reactor.core.publisher.Mono;
  *
  */
 @WebFluxTest(controllers = {UserController.class, UserRestController.class})
-@Import({ UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, AuthenticationManager.class,
+@Import({UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, AuthenticationManager.class,
         TokenProvider.class, SecurityContextRepository.class})
 public class UserControllerUnitTest {
     

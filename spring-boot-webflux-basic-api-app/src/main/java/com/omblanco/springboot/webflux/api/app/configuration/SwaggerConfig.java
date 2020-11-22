@@ -1,18 +1,29 @@
-package com.omblanco.springboot.webflux.api.app;
+package com.omblanco.springboot.webflux.api.app.configuration;
 
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.AUTH_URL_V1;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.STATUS_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
+import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V3;
 import static springfox.documentation.builders.PathSelectors.regex;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
+import org.springframework.http.HttpHeaders;
 
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -36,6 +47,8 @@ public class SwaggerConfig {
                 .apiInfo(this.usersApiInfoV1())
                 .enable(true)
                 .groupName("user-api-v1")
+                .securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(Arrays.asList(apiKey()))
                 .select()
                 .paths(userPathsV1())
                 .build();
@@ -51,7 +64,7 @@ public class SwaggerConfig {
 
     
     private Predicate<String> userPathsV1() {
-        return regex(BaseApiConstants.USER_BASE_URL_V1.concat(".*"));
+        return regex(USER_BASE_URL_V1.concat(".*"));
     }
     
     @Bean
@@ -60,6 +73,8 @@ public class SwaggerConfig {
                 .apiInfo(this.usersApiInfoV2())
                 .enable(true)
                 .groupName("user-api-v2")
+                .securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(Arrays.asList(apiKey()))
                 .select()
                 .paths(userPathsV2())
                 .build();
@@ -75,7 +90,7 @@ public class SwaggerConfig {
 
     
     private Predicate<String> userPathsV2() {
-        return regex(BaseApiConstants.USER_BASE_URL_V2.concat(".*"));
+        return regex(USER_BASE_URL_V2.concat(".*"));
     }
     
     @Bean
@@ -84,6 +99,8 @@ public class SwaggerConfig {
                 .apiInfo(this.usersApiInfoV3())
                 .enable(true)
                 .groupName("user-api-v3")
+                .securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(Arrays.asList(apiKey()))
                 .select()
                 .paths(userPathsV3())
                 .build();
@@ -99,7 +116,7 @@ public class SwaggerConfig {
 
     
     private Predicate<String> userPathsV3() {
-        return regex(BaseApiConstants.USER_BASE_URL_V3.concat(".*"));
+        return regex(USER_BASE_URL_V3.concat(".*"));
     }
     
     @Bean
@@ -108,6 +125,8 @@ public class SwaggerConfig {
                 .apiInfo(this.appInfoapiInfo())
                 .enable(true)
                 .groupName("app-info-api")
+                .securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(Arrays.asList(apiKey()))
                 .select()
                 .paths(AppInfoPaths())
                 .build();
@@ -122,6 +141,54 @@ public class SwaggerConfig {
     }
 
     private Predicate<String> AppInfoPaths() {
-        return regex(BaseApiConstants.STATUS_BASE_URL_V1.concat(".*"));
+        return regex(STATUS_BASE_URL_V1.concat(".*"));
     }
+    
+    private ApiKey apiKey() {
+        return new ApiKey("JWT", HttpHeaders.AUTHORIZATION, "header");
+    }
+    
+    private SecurityContext securityContext() {
+        Predicate<String> paths = PathSelectors.regex(USER_BASE_URL_V1.concat(".*"))
+                .or(PathSelectors.regex(USER_BASE_URL_V2.concat(".*")))
+                .or(PathSelectors.regex(USER_BASE_URL_V3.concat(".*")))
+                .or(PathSelectors.regex(STATUS_BASE_URL_V1.concat(".*")));
+        
+        
+        return SecurityContext.builder()
+            .securityReferences(defaultAuth())
+            .forPaths(paths)
+            .build();
+    }
+    
+    List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope
+            = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
+    }
+    
+    @Bean
+    public Docket docketAuthHandler() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(this.authHandlerApiInfo())
+                .enable(true)
+                .groupName("app-auth-api")
+                .select()
+                .paths(authHandlerPaths())
+                .build();
+    }
+    
+    private ApiInfo authHandlerApiInfo() {
+        return new ApiInfoBuilder()
+                .title("Reactive Auth")
+                .description("Reactive Auth para obtener un token de autenticación")
+                .version(appVersion)
+                .build();
+    }
+
+    private Predicate<String> authHandlerPaths() {
+        return regex(AUTH_URL_V1.concat(".*"));
+    }    
 }
