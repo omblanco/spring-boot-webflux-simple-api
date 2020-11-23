@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
+
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,6 +21,7 @@ import reactor.core.scheduler.Schedulers;
  * @param <E> Clase Entity
  * @param <R> Clase Repository
  */
+@Loggable
 @AllArgsConstructor
 public abstract class CommonServiceImpl <D, E, R extends JpaRepository<E, Long>> implements CommonService<D, E>{
 

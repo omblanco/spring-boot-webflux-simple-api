@@ -65,7 +65,7 @@ public class LoggingAspect {
      * @return el objeto que sería devuelto originalmente en el método.
      * @throws Throwable Excepción lanzada por el método
      */
-    @Around("SystemArchitecture.inServiceLayer() || SystemArchitecture.inWebLayer() || SystemArchitecture.inDataAccessLayer()")
+    @Around("SystemArchitecture.inServiceLayer() || SystemArchitecture.inWebLayer() || SystemArchitecture.inDataAccessLayer() || SystemArchitecture.loggableElement()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String uuid = UUID.randomUUID().toString();

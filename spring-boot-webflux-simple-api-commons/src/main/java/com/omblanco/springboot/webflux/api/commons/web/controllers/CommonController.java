@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
 import com.omblanco.springboot.webflux.api.commons.services.CommonService;
 import com.omblanco.springboot.webflux.api.commons.web.dto.CommonDTO;
 
@@ -33,6 +34,7 @@ import reactor.core.publisher.Mono;
  * @param <E> Clase Entity
  * @param <S> Clase del servicio
  */
+@Loggable
 @AllArgsConstructor
 public abstract class CommonController <D extends CommonDTO, E, S extends CommonService<D, E>>{
 
