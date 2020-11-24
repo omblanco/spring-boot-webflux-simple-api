@@ -70,7 +70,7 @@ public class UserHandler extends CommonHandler {
         }
     }
     
-    
+    @Deprecated
     public Mono<ServerResponse> findByFilter(ServerRequest request) {
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
