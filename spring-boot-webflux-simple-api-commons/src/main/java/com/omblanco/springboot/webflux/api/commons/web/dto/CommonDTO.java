@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CommonDTO {
+public class CommonDTO<K> {
 
-    private Long id;
+    private K id;
 }

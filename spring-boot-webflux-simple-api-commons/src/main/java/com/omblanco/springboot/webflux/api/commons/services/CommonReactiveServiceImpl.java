@@ -1,64 +1,51 @@
 package com.omblanco.springboot.webflux.api.commons.services;
 
-import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * Implementación abstracta del servicio genérico
- * para repositorios no reactivos
+ * para repositorios reactivos de mongo
  * @author oscar.martinezblanco
  *
  * @param <D> Clase DTO
  * @param <E> Clase Entity
  * @param <R> Clase Repository
- * @param <K>
+ * @param <K> Tipo de la clave 
  */
 @Loggable
 @AllArgsConstructor
-public abstract class CommonServiceImpl <D, E, R extends JpaRepository<E, K>, K> implements CommonService<D, E, K> {
+public abstract class CommonReactiveServiceImpl <D, E, R extends ReactiveMongoRepository<E, String>, K> implements CommonService<D, E, K>{
 
     protected R repository;
     
     @Override
     public Flux<D> findAll() {
-        return Flux.defer(() -> Flux.fromIterable(repository.findAll()
-                .stream().map(this::convertToDto)
-                .collect(Collectors.toList())))
-                .subscribeOn(Schedulers.boundedElastic());
+        
+        return repository.
+                findAll()
+                .map(this::convertToDto);
     }
 
     @Override
     public Mono<D> findById(K id) {
-        return Mono.defer(() -> Mono.just(repository.findById(id))).flatMap(optional -> {
-            if (optional.isPresent()) {
-                return Mono.just(convertToDto(optional.get()));
-            }
-            
-            return Mono.empty();
-        }).subscribeOn(Schedulers.boundedElastic());
+        return repository.findById(id.toString()).map(this::convertToDto);
     }
 
     @Override
     public Mono<D> save(D dto) {
-        return Mono.defer(() -> Mono.just(convertToDto(repository.save(convertToEntity(dto)))))
-                .subscribeOn(Schedulers.boundedElastic());
+        return repository.save(convertToEntity(dto)).map(this::convertToDto);
     }
 
     @Override
     public Mono<Void> delete(D dto) {
-        return Mono.defer(() -> {
-            repository.delete(convertToEntity(dto));
-            return Mono.empty();
-        }).subscribeOn(Schedulers.boundedElastic()).then();
+        return repository.delete(convertToEntity(dto)).flatMap(result -> Mono.empty());
     }
 
     /**
