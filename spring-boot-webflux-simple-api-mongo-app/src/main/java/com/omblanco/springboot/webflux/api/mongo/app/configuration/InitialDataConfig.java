@@ -18,6 +18,9 @@ import reactor.core.publisher.Flux;
  * Carga los datos iniciales de usuarios para el profile de 
  * pruebas
  * see https://docs.spring.io/spring-data/mongodb/docs/2.0.9.RELEASE/reference/html/#core.repository-populators
+ * see https://jira.spring.io/browse/DATACMNS-1133
+ * see https://stackoverflow.com/questions/47678465/how-can-you-load-initial-data-in-mongodb-through-spring-boot
+ * see Jackson2RepositoryPopulatorFactoryBean
  * @author oscar.martinezblanco
  *
  */
@@ -27,32 +30,11 @@ public class InitialDataConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InitialDataConfig.class);
     
-//    @Autowired
-//    private UserRepository userRepository;
-    
-//    @Value("classpath:data.json")
-//    private Resource initialData;
-
-    /**
-     * https://jira.spring.io/browse/DATACMNS-1133
-     * Jackson2RepositoryPopulatorFactoryBean no es compatible con Jackson2RepositoryPopulatorFactoryBean
-     * @param objectMapper
-     * @return
-     */
-//    @Bean
-//    @Autowired
-//    public Jackson2RepositoryPopulatorFactoryBean repositoryPopulator(ObjectMapper objectMapper){
-//        Jackson2RepositoryPopulatorFactoryBean factory = new Jackson2RepositoryPopulatorFactoryBean();
-//        factory.setMapper(objectMapper);
-//        factory.setResources(Arrays.asList(initialData).toArray(new Resource[] {}));
-//        return factory;
-//    }
-    
     @Bean
     public ApplicationRunner loadInitalData(UserRepository userRepository) {
         return applicationRunner -> {
-//          Limpiamos si hay usuarios
-            userRepository.deleteAll();
+            // Limpiamos si hay usuarios
+            userRepository.deleteAll().subscribe();
             
             User user1 = new User(null, "John", "Doe", "john@mail.com", new Date(), "$2a$10$vUE9JNc3ZflWL6u4HFH2kOEHWgNIahyAxoUoaZ1g0rsHJ3y9kzhwy");
             User user2 = new User(null, "Oscar", "Suarez", "oscar@mail.com", new Date(), "$2a$10$vUE9JNc3ZflWL6u4HFH2kOEHWgNIahyAxoUoaZ1g0rsHJ3y9kzhwy");
