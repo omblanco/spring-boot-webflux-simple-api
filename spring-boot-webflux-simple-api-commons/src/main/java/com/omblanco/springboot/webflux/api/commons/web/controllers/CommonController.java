@@ -33,10 +33,11 @@ import reactor.core.publisher.Mono;
  * @param <F> Clase Filter
  * @param <E> Clase Entity
  * @param <S> Clase del servicio
+ * @param <K>
  */
 @Loggable
 @AllArgsConstructor
-public abstract class CommonController <D extends CommonDTO, E, S extends CommonService<D, E>>{
+public abstract class CommonController <D extends CommonDTO<K>, E, S extends CommonService<D, E, K>, K>{
 
     protected static final String ID_PARAM_URL = "/{id}";
     
@@ -61,7 +62,7 @@ public abstract class CommonController <D extends CommonDTO, E, S extends Common
      */
     @GetMapping(ID_PARAM_URL)
     @ResponseBody
-    public Mono<ResponseEntity<D>> get(@PathVariable Long id) {
+    public Mono<ResponseEntity<D>> get(@PathVariable K id) {
         return service.findById(id).map(d -> ResponseEntity.ok()
                 .contentType(APPLICATION_JSON).body(d))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -96,7 +97,7 @@ public abstract class CommonController <D extends CommonDTO, E, S extends Common
      */
     @PutMapping(ID_PARAM_URL)
     @ResponseBody
-    public Mono<ResponseEntity<D>> update(@PathVariable Long id, @Valid @RequestBody D dto) {
+    public Mono<ResponseEntity<D>> update(@PathVariable K id, @Valid @RequestBody D dto) {
         return service.findById(id).flatMap(dtoToSave -> {
             
             updateDtoToSave(dto, dtoToSave);
@@ -116,7 +117,7 @@ public abstract class CommonController <D extends CommonDTO, E, S extends Common
      * @return Resultado de la operación
      */
     @DeleteMapping(ID_PARAM_URL)
-    public Mono<ResponseEntity<Void>> delete(@PathVariable Long id) {
+    public Mono<ResponseEntity<Void>> delete(@PathVariable K id) {
         return service.findById(id).flatMap(dtoDb -> {
             return service.delete(dtoDb).then(Mono.just(new ResponseEntity<Void>(NO_CONTENT)));
         }).defaultIfEmpty(new ResponseEntity<Void>(NOT_FOUND));

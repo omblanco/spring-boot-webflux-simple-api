@@ -26,7 +26,8 @@
 	</properties>
 
 	<modules>
-		<module>spring-boot-webflux-basic-api-app</module>
+		<module>spring-boot-webflux-simple-api-app</module>
+		<module>spring-boot-webflux-simple-api-mongo-app</module>
 		<module>spring-boot-webflux-simple-api-commons</module>
 		<module>spring-boot-webflux-simple-api-client</module>
 	</modules>
