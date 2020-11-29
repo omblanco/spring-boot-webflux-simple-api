@@ -46,8 +46,11 @@ public class UserServiceImpl extends CommonReactiveServiceImpl<UserDTO, User, Us
 
     @Override
     public Mono<Page<UserDTO>> findByFilter(UserFilterDTO filter, Pageable pageable) {
-        // TODO Auto-generated method stub
-        return null;
+        return repository.countBy(filter).flatMap(count -> {
+            return repository.findBy(filter, pageable).collect(Collectors.toList()).flatMap(users -> {
+                return Mono.just(convertPageToDto(new PageImpl<User>(users, pageable, count)));
+            });
+        });        
     }
 
     @Override
@@ -64,7 +67,7 @@ public class UserServiceImpl extends CommonReactiveServiceImpl<UserDTO, User, Us
     protected Page<UserDTO> convertPageToDto(Page<User> entityPage) {
         return new PageImpl<UserDTO>(entityPage.getContent().stream().map(user -> {
             return this.convertToDto(user);
-        }).collect(Collectors.toList()), entityPage.getPageable(), entityPage.getSize());
+        }).collect(Collectors.toList()), entityPage.getPageable(), entityPage.getTotalElements());
     }
 
     @Override

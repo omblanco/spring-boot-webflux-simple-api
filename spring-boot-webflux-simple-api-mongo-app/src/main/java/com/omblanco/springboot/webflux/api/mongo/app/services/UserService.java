@@ -8,7 +8,6 @@ import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
-
 import reactor.core.publisher.Mono;
 
 public interface UserService extends CommonService<UserDTO, User, String>{
@@ -27,4 +26,5 @@ public interface UserService extends CommonService<UserDTO, User, String>{
      * @return Usuario
      */
     Mono<UserDTO> findByEmail(String email);
+    
 }

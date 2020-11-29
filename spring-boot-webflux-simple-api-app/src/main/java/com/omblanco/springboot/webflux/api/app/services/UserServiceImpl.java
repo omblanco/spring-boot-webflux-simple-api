@@ -82,7 +82,7 @@ public class UserServiceImpl extends CommonServiceImpl<UserDTO, User, UserReposi
     protected Page<UserDTO> convertPageToDto(Page<User> userPage) {
         return new PageImpl<UserDTO>(userPage.getContent().stream().map(user -> {
             return this.convertToDto(user);
-        }).collect(Collectors.toList()), userPage.getPageable(), userPage.getSize());
+        }).collect(Collectors.toList()), userPage.getPageable(), userPage.getTotalElements());
     }
     
     /**
