@@ -1,7 +1,7 @@
 package com.omblanco.springboot.webflux.api.mongo.app.web.dtos;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +22,9 @@ import lombok.ToString;
 public class LoginRequestDTO {
 
     @Email
-    @NotNull
+    @NotEmpty
     private String email;
     
-    @NotNull
+    @NotEmpty
     private String password;
 }
