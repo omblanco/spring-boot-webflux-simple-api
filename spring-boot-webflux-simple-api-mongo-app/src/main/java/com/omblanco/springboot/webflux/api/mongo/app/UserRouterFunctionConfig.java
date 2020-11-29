@@ -22,7 +22,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.omblanco.springboot.webflux.api.mongo.app.web.handlers.AuthHandler;
 import com.omblanco.springboot.webflux.api.mongo.app.web.handlers.UserHandler;
 
-
 /**
  * Configuración para los Functional Endpoints de usuario
  * @author oscar.martinezblanco
