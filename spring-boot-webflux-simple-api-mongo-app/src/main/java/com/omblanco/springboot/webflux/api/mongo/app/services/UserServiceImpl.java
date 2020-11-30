@@ -10,10 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omblanco.springboot.webflux.api.commons.services.CommonReactiveServiceImpl;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.mongo.app.model.repositories.UserRepository;
 import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserDTO;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
 import lombok.Builder;
 import reactor.core.publisher.Mono;

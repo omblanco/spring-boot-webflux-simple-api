@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.mongo.app.web.dtos;
+package com.omblanco.springboot.webflux.api.commons.web.dto;
 
 import java.util.Date;
 

@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
-import com.omblanco.springboot.webflux.api.app.web.dto.AppInfoDTO;
+import com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants;
+import com.omblanco.springboot.webflux.api.commons.web.dto.AppInfoDTO;
 
 /**
  * AppInfoController

@@ -13,8 +13,8 @@ import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
 import com.omblanco.springboot.webflux.api.app.model.specifications.UserSpecifications;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
-import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.commons.services.CommonServiceImpl;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 
 import lombok.Builder;
 import reactor.core.publisher.Mono;

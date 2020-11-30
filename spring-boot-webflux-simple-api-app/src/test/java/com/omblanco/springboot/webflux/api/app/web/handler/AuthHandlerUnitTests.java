@@ -29,10 +29,10 @@ import com.omblanco.springboot.webflux.api.app.security.SecurityContextRepositor
 import com.omblanco.springboot.webflux.api.app.security.TokenProvider;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.services.UserServiceImpl;
-import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginRequestDTO;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginResponseDTO;
+import com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginRequestDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginResponseDTO;
 
 import reactor.core.publisher.Mono;
 

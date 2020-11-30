@@ -10,6 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.omblanco.springboot.webflux.api.commons.security.AuthenticatedUser;
+
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;

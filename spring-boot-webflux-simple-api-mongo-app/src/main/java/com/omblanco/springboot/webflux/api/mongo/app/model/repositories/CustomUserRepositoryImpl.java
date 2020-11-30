@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Query;
 
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

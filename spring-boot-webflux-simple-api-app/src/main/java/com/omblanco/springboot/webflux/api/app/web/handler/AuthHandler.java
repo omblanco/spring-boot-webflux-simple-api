@@ -14,9 +14,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.omblanco.springboot.webflux.api.app.security.TokenProvider;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginRequestDTO;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginResponseDTO;
 import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginRequestDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginResponseDTO;
 import com.omblanco.springboot.webflux.api.commons.web.handler.CommonHandler;
 
 import lombok.AllArgsConstructor;

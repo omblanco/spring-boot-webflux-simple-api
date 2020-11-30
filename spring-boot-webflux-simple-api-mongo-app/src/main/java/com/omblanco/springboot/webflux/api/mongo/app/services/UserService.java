@@ -4,9 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.omblanco.springboot.webflux.api.commons.services.CommonService;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserDTO;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
 import reactor.core.publisher.Mono;
 

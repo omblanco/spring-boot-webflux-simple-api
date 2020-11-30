@@ -8,6 +8,7 @@ import com.omblanco.springboot.webflux.api.mongo.app.aop.LoggingAspect;
 import com.omblanco.springboot.webflux.api.mongo.app.aop.ProfilingAspect;
 
 
+
 /**
  * Configuración para el traceo AOP
  */

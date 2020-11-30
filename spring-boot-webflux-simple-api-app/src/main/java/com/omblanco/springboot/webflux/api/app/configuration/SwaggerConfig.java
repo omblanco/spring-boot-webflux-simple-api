@@ -1,10 +1,10 @@
 package com.omblanco.springboot.webflux.api.app.configuration;
 
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.AUTH_URL_V1;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.STATUS_BASE_URL_V1;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V3;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.AUTH_URL_V1;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.STATUS_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V2;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V3;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 import java.util.Arrays;

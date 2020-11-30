@@ -2,8 +2,8 @@ package com.omblanco.springboot.webflux.api.mongo.app.model.repositories;
 
 import org.springframework.data.domain.Pageable;
 
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
