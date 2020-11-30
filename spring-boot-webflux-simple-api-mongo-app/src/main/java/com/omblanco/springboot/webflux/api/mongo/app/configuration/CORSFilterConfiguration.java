@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.mongo.app.sercurity;
+package com.omblanco.springboot.webflux.api.mongo.app.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @Profile("security")
 @Configuration
 @EnableWebFlux
-public class CORSFilter implements WebFluxConfigurer {
+public class CORSFilterConfiguration implements WebFluxConfigurer {
 
     private static final String ASTERISK = "*";
     private static final String ALL_URL_PATTERN = "/**";

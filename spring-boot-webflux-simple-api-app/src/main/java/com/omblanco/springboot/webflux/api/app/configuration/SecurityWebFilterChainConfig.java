@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.security;
+package com.omblanco.springboot.webflux.api.app.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,18 +9,21 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+import com.omblanco.springboot.webflux.api.commons.security.AuthenticationManager;
+import com.omblanco.springboot.webflux.api.commons.security.SecurityContextRepository;
+
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
 /**
- * Clase de configuración de Spring Security
+ * Clase de configuración de los filtros de Spring Security
  * @author oscar.martinezblanco
  *
  */
 @AllArgsConstructor
 @Configuration
 @EnableWebFluxSecurity
-public class SecurityConfig{
+public class SecurityWebFilterChainConfig {
 
     private AuthenticationManager authenticationManager;
 

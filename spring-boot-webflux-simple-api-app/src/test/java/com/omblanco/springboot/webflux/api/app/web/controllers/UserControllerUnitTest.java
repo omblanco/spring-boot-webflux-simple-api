@@ -1,7 +1,7 @@
 package com.omblanco.springboot.webflux.api.app.web.controllers;
 
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,12 +29,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.omblanco.springboot.webflux.api.app.configuration.ModelMapperConfig;
+import com.omblanco.springboot.webflux.api.app.configuration.SecurityConfig;
+import com.omblanco.springboot.webflux.api.app.configuration.SecurityWebFilterChainConfig;
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.model.repository.UserRepository;
-import com.omblanco.springboot.webflux.api.app.security.AuthenticationManager;
-import com.omblanco.springboot.webflux.api.app.security.SecurityConfig;
-import com.omblanco.springboot.webflux.api.app.security.SecurityContextRepository;
-import com.omblanco.springboot.webflux.api.app.security.TokenProvider;
 import com.omblanco.springboot.webflux.api.app.services.UserServiceImpl;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
 
@@ -48,8 +46,7 @@ import reactor.core.publisher.Mono;
  *
  */
 @WebFluxTest(controllers = {UserController.class, UserRestController.class})
-@Import({UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, AuthenticationManager.class,
-        TokenProvider.class, SecurityContextRepository.class})
+@Import({UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, SecurityWebFilterChainConfig.class})
 public class UserControllerUnitTest {
     
     @MockBean

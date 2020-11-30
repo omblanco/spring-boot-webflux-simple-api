@@ -3,15 +3,14 @@ package com.omblanco.springboot.webflux.api.mongo.app.model.repositories;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Query;
 
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,9 +26,12 @@ public class CustomUserRepositoryImpl extends AbstractCustomUserRepositoryImpl i
     private static final String EMAIL_PARAM = "email";
     private static final String SURNAME_PARAM = "surname";
     
-    @Autowired
     private ReactiveMongoTemplate template;
     
+    public CustomUserRepositoryImpl(ReactiveMongoTemplate template) {
+        this.template = template;
+    }
+
     @Override
     public Flux<User> findBy(UserFilterDTO filter, Pageable pageable) {
         List<AggregationOperation> operations = new ArrayList<AggregationOperation>();

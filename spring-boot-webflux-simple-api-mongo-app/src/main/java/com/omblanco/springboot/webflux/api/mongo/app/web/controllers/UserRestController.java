@@ -1,6 +1,6 @@
 package com.omblanco.springboot.webflux.api.mongo.app.web.controllers;
 
-import static com.omblanco.springboot.webflux.api.mongo.app.utils.BaseApiConstants.USER_BASE_URL_V2;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import org.springframework.data.domain.Pageable;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.omblanco.springboot.webflux.api.commons.web.controllers.CommonController;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.mongo.app.services.UserService;
 import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserDTO;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
 import lombok.Builder;
 import reactor.core.CorePublisher;

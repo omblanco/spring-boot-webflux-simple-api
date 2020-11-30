@@ -55,18 +55,10 @@
 		<!-- ./Spring -->
 		
 		<!-- Embed mongo -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>cz.jirutka.spring</groupId> -->
-<!-- 			<artifactId>embedmongo-spring</artifactId> -->
-<!-- 			<version>1.3.1</version> -->
-<!-- 		</dependency> -->
-		
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-<!-- 			<version>3.0.0</version> -->
 		</dependency>
-		
 		
 		<!-- jwt -->
 		<dependency>

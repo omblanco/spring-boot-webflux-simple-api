@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.utils;
+package com.omblanco.springboot.webflux.api.commons.utils;
 
 /**
  * Fichero de constantes

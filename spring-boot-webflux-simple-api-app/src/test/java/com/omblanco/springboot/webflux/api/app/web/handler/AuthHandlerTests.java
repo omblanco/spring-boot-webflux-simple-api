@@ -1,8 +1,8 @@
 package com.omblanco.springboot.webflux.api.app.web.handler;
 
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V1;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V2;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V3;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V2;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V3;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,9 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginRequestDTO;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginResponseDTO;
+import com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginRequestDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginResponseDTO;
 
 import reactor.core.publisher.Mono;
 

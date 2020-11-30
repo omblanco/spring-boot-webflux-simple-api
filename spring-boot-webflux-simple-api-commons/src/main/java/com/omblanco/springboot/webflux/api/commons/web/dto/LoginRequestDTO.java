@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.web.dto;
+package com.omblanco.springboot.webflux.api.commons.web.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;

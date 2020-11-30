@@ -1,8 +1,8 @@
 package com.omblanco.springboot.webflux.api.app.web.handler;
 
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.FORWARD_SLASH;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.ID_PARAM_NAME;
-import static com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants.USER_BASE_URL_V3;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.FORWARD_SLASH;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.ID_PARAM_NAME;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.USER_BASE_URL_V3;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
@@ -19,8 +19,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
-import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.commons.web.handler.CommonHandler;
 
 import lombok.AllArgsConstructor;

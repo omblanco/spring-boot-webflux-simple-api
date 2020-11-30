@@ -1,6 +1,6 @@
 package com.omblanco.springboot.webflux.api.mongo.app.web.controllers;
 
-import static com.omblanco.springboot.webflux.api.mongo.app.utils.BaseApiConstants.STATUS_BASE_URL_V1;
+import static com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants.STATUS_BASE_URL_V1;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.util.Date;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.AppInfoDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.AppInfoDTO;
 
 import reactor.core.publisher.Mono;
 

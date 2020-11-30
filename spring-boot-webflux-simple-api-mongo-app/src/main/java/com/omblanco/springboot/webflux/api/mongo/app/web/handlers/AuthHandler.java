@@ -1,7 +1,7 @@
 package com.omblanco.springboot.webflux.api.mongo.app.web.handlers;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -13,11 +13,11 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
+import com.omblanco.springboot.webflux.api.commons.security.TokenProvider;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginRequestDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginResponseDTO;
 import com.omblanco.springboot.webflux.api.commons.web.handler.CommonHandler;
-import com.omblanco.springboot.webflux.api.mongo.app.sercurity.TokenProvider;
 import com.omblanco.springboot.webflux.api.mongo.app.services.UserService;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.LoginRequestDTO;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.LoginResponseDTO;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -59,7 +59,7 @@ public class AuthHandler extends CommonHandler {
                     if (passwordEncoder.matches(login.getPassword(), user.getPassword())) {
                         return ServerResponse.ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(BodyInserters.fromValue(new LoginResponseDTO(tokenProvider.generateToken(user))));
+                                .body(BodyInserters.fromValue(new LoginResponseDTO(tokenProvider.generateToken(user.getEmail(), null))));
                     } else {
                         return ServerResponse.status(UNAUTHORIZED).build();
                     }
