@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.security;
+package com.omblanco.springboot.webflux.api.mongo.app.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
