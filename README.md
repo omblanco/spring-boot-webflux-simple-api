@@ -18,7 +18,7 @@ Api rest de ejemplo para la creación de microservicios reactivos con Spring Boo
 - [Spring WebFlux](https://spring.io/projects/spring-framework)
 - [Spring Security](https://spring.io/projects/spring-security)
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
-- [Spring Data Mongodb Reactive](https://spring.io/projects/spring-data-mongodb#overview)
+- [Spring Data Mongo DB Reactive](https://spring.io/projects/spring-data-mongodb#overview)
 - [Spring Fox (Swagger)](https://springfox.github.io/springfox/)
 - [Spring AOP](https://docs.spring.io/spring-framework/docs/5.3.x/reference/html/core.html#aop-api-pointcuts)
 - [Lombok](https://projectlombok.org/)
@@ -95,6 +95,7 @@ Utilización de Lombok para generar los getters, setters y constructores y así 
 Documentación de los métodos rest utilizando Spring Fox y Swagger. En el despliegue local se habilita en [Swagger](http://localhost:8080/swagger-ui/index.html).
 
 ## Módulos
+
 - spring-boot-webflux-simple-api-app: Módulo con la aplicación para MySql. Se divide en los paquetes:
 	- aop: definiciones de los pointcut a tracear.
 	- configuration: clases de configuración de la aplicación
@@ -106,3 +107,95 @@ Documentación de los métodos rest utilizando Spring Fox y Swagger. En el despl
 - spring-boot-webflux-simple-api-client: cliente reactivo para consumir el api de usuarios expuesta.
 
 ## Uso
+
+### Requisitos
+
+- [Java JDK 11](https://www.oracle.com/es/java/technologies/javase-jdk11-downloads.html)
+- [Maven](https://maven.apache.org/)
+
+### Generación de artefactos
+
+Con maven instalado en el entorno, en el directorio raíz del proyecto lanzamos:
+
+```
+mvn clean package
+```
+
+Resultado:
+```
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO]
+[INFO] spring-boot-webflux-simple-api ..................... SUCCESS [  0.318 s]
+[INFO] spring-boot-webflux-simple-api-commons ............. SUCCESS [  4.531 s]
+[INFO] spring-boot-webflux-simple-api-app ................. SUCCESS [ 21.973 s]
+[INFO] spring-boot-webflux-simple-api-mongo-app ........... SUCCESS [  5.121 s]
+[INFO] spring-boot-webflux-simple-api-client .............. SUCCESS [  0.299 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 33.214 s
+[INFO] Finished at: 2020-12-05T21:03:43+01:00
+[INFO] Final Memory: 83M/284M
+[INFO] ------------------------------------------------------------------------
+```
+
+Para omitir los tests:
+```
+mvn clean package -DskipTests=true
+```
+
+### Lanzar la aplicación
+
+Moverse al directorio:
+
+```
+spring-boot-webflux-simple-api-app\target
+```
+
+o 
+
+```
+spring-boot-webflux-simple-api-mongo-app\target
+```
+
+Y ejecutamos el fichero jar según la aplicación:
+
+```
+java -jar spring-boot-webflux-simple-api-app-x.x.x.jar
+java -jar spring-boot-webflux-simple-api-mongo-app-x.x.x.jar
+```
+
+Para lanzar la aplicación con perfiles:
+```
+java -jar -Dspring.profiles.active=profiling,dev,security spring-boot-webflux-simple-api-mongo-app-x.x.x.jar
+
+Alternativa sin Maven:
+En el directorio raíz del proyecto se hace uso del comando mvnw tanto para windows como para unix
+
+```
+mvnw clean package
+```
+
+Alternativa para no lanzar los tests
+```
+mvnw clean package -DskipTests=true
+```
+
+Lanzar las aplicaciones desde el directorio raíz:
+
+```
+mvnw -pl spring-boot-webflux-simple-api-app -am spring-boot:run
+```
+
+o para mongo:
+
+```
+mvnw -pl spring-boot-webflux-simple-api-mongo-app -am spring-boot:run
+```
+
+Y por último alternativa añadiendo profiles:
+```
+mvnw -pl spring-boot-webflux-simple-api-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
+mvnw -pl spring-boot-webflux-simple-api-mongo-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
+```
