@@ -3,8 +3,8 @@ Spring Boot &amp; WebFlux Simple Api
 
 
 ## Índice
-- [Descripción](#descripcion)
-- [Características](#caracteristicas)
+- [Descripción](#descripción)
+- [Características](#características)
 - [Uso](#uso)
 
 ## Descripción
