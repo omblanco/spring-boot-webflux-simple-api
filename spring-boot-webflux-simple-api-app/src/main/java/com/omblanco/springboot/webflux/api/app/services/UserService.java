@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
-import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.commons.services.CommonService;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 
 import reactor.core.publisher.Mono;
 

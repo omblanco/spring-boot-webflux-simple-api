@@ -10,10 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omblanco.springboot.webflux.api.commons.services.CommonReactiveServiceImpl;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.mongo.app.model.entity.User;
 import com.omblanco.springboot.webflux.api.mongo.app.model.repositories.UserRepository;
 import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserDTO;
-import com.omblanco.springboot.webflux.api.mongo.app.web.dtos.UserFilterDTO;
 
 import lombok.Builder;
 import reactor.core.publisher.Mono;
@@ -46,8 +46,11 @@ public class UserServiceImpl extends CommonReactiveServiceImpl<UserDTO, User, Us
 
     @Override
     public Mono<Page<UserDTO>> findByFilter(UserFilterDTO filter, Pageable pageable) {
-        // TODO Auto-generated method stub
-        return null;
+        return repository.countBy(filter).flatMap(count -> {
+            return repository.findBy(filter, pageable).collect(Collectors.toList()).flatMap(users -> {
+                return Mono.just(convertPageToDto(new PageImpl<User>(users, pageable, count)));
+            });
+        });        
     }
 
     @Override
@@ -64,7 +67,7 @@ public class UserServiceImpl extends CommonReactiveServiceImpl<UserDTO, User, Us
     protected Page<UserDTO> convertPageToDto(Page<User> entityPage) {
         return new PageImpl<UserDTO>(entityPage.getContent().stream().map(user -> {
             return this.convertToDto(user);
-        }).collect(Collectors.toList()), entityPage.getPageable(), entityPage.getSize());
+        }).collect(Collectors.toList()), entityPage.getPageable(), entityPage.getTotalElements());
     }
 
     @Override

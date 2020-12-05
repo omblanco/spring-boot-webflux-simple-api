@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.mongo.app.sercurity;
+package com.omblanco.springboot.webflux.api.commons.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,14 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
-@Component
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityContextRepository.class);

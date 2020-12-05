@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
+import com.omblanco.springboot.webflux.api.commons.annotation.traceable.Traceable;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Mono;
  * @param <R> Clase Repository
  * @param <K> Tipo de la clave 
  */
+@Traceable
 @Loggable
 @AllArgsConstructor
 public abstract class CommonReactiveServiceImpl <D, E, R extends ReactiveMongoRepository<E, String>, K> implements CommonService<D, E, K>{

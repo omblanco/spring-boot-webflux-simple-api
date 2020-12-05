@@ -15,7 +15,7 @@ public class ProfilingAspect {
     /**
      * Registra datos de temporización en los logs.
      */
-    @Around("SystemArchitecture.inServiceLayer()")
+    @Around("SystemArchitecture.inServiceLayer() || SystemArchitecture.traceableElement()")
     public Object profile(ProceedingJoinPoint call) throws Throwable {
         StopWatch clock = new StopWatch("Profiling");
         try {

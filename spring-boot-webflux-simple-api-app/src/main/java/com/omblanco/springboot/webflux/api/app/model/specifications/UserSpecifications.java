@@ -11,7 +11,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.omblanco.springboot.webflux.api.app.model.entity.User;
-import com.omblanco.springboot.webflux.api.app.web.dto.UserFilterDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 
 public class UserSpecifications extends BaseSpecifications {
     

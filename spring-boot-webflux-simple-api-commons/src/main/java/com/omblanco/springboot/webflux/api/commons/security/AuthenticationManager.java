@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.security;
+package com.omblanco.springboot.webflux.api.commons.security;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,6 @@ import reactor.core.publisher.Mono;
  *
  */
 @AllArgsConstructor
-@Component
 public class AuthenticationManager implements ReactiveAuthenticationManager {
 
     private TokenProvider tokenProvider;

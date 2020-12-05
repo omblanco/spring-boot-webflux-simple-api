@@ -22,17 +22,15 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.omblanco.springboot.webflux.api.app.UserRouterFunctionConfig;
 import com.omblanco.springboot.webflux.api.app.configuration.ModelMapperConfig;
-import com.omblanco.springboot.webflux.api.app.security.AuthenticationManager;
-import com.omblanco.springboot.webflux.api.app.security.BCryptPasswordConfig;
-import com.omblanco.springboot.webflux.api.app.security.SecurityConfig;
-import com.omblanco.springboot.webflux.api.app.security.SecurityContextRepository;
-import com.omblanco.springboot.webflux.api.app.security.TokenProvider;
+import com.omblanco.springboot.webflux.api.app.configuration.SecurityConfig;
+import com.omblanco.springboot.webflux.api.app.configuration.SecurityWebFilterChainConfig;
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.services.UserServiceImpl;
-import com.omblanco.springboot.webflux.api.app.utils.BaseApiConstants;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginRequestDTO;
-import com.omblanco.springboot.webflux.api.app.web.dto.LoginResponseDTO;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
+import com.omblanco.springboot.webflux.api.commons.security.TokenProvider;
+import com.omblanco.springboot.webflux.api.commons.utils.BaseApiConstants;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginRequestDTO;
+import com.omblanco.springboot.webflux.api.commons.web.dto.LoginResponseDTO;
 
 import reactor.core.publisher.Mono;
 
@@ -43,8 +41,7 @@ import reactor.core.publisher.Mono;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {UserRouterFunctionConfig.class, AuthHandler.class, UserHandler.class})
-@Import({UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, AuthenticationManager.class,
-    TokenProvider.class, SecurityContextRepository.class, BCryptPasswordConfig.class})
+@Import({UserServiceImpl.class, ModelMapperConfig.class, SecurityConfig.class, SecurityWebFilterChainConfig.class})
 @WebFluxTest
 public class AuthHandlerUnitTests {
 
@@ -80,7 +77,7 @@ public class AuthHandlerUnitTests {
         //when:
         when(userService.findByEmail(login.getEmail())).thenReturn(Mono.just(userDto));
         when(passwordEncoder.matches(login.getPassword(), userDto.getPassword())).thenReturn(Boolean.TRUE);
-        when(tokenProvider.generateToken(userDto)).thenReturn(token);
+        when(tokenProvider.generateToken(userDto.getEmail(), null)).thenReturn(token);
         
         //then:
         client.post()
