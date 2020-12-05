@@ -1,4 +1,4 @@
-# spring-boot-webflux-simple-api
+# Spring Boot WebFlux Simple Api
 Spring Boot &amp; WebFlux Simple Api
 
 
@@ -95,5 +95,14 @@ Utilización de Lombok para generar los getters, setters y constructores y así 
 Documentación de los métodos rest utilizando Spring Fox y Swagger. En el despliegue local se habilita en [Swagger](http://localhost:8080/swagger-ui/index.html).
 
 ## Módulos
+- spring-boot-webflux-simple-api-app: Módulo con la aplicación para MySql. Se divide en los paquetes:
+	- aop: definiciones de los pointcut a tracear.
+	- configuration: clases de configuración de la aplicación
+	- model: paquete con las entidades y repositorios de acceso a datos.
+	- service: capa con los servicios para la lógica de negocio.
+	- web: paquete con las clases que implementan los endpoints REST (controllers, handlers, dtos, ...).
+- spring-boot-webflux-simple-api-mongo-app: réplica del módulo anterior pero versión para mongodb
+- spring-boot-webflux-simple-api-commons: módulo con clases comunes para desarrollar microservicios.
+- spring-boot-webflux-simple-api-client: cliente reactivo para consumir el api de usuarios expuesta.
 
 ## Uso
