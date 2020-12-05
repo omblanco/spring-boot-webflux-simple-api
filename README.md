@@ -169,6 +169,7 @@ java -jar spring-boot-webflux-simple-api-mongo-app-x.x.x.jar
 Para lanzar la aplicación con perfiles:
 ```
 java -jar -Dspring.profiles.active=profiling,dev,security spring-boot-webflux-simple-api-mongo-app-x.x.x.jar
+```
 
 Alternativa sin Maven:
 En el directorio raíz del proyecto se hace uso del comando mvnw tanto para windows como para unix
