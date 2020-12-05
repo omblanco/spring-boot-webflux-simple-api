@@ -43,6 +43,33 @@ Ejemplos de implementación de controladores con las anotaciones @Controller @Re
 
 Mediante AOP se habilita el log para las capas de la aplicación mostrando los parámetros de entrada y salida. En la trazabilidad se muestra el tiempo de ejecución de un método en nanosegundos. Tanto el nivel del log como el deshabilitado son esta característica son configurables. En el caso de la activación/desactivación se realiza mediante el perfil “profiling”.
 
+```java
+2020-12-05 20:26:27.766 DEBUG 9292 --- [oundedElastic-1] c.o.s.webflux.api.app.aop.LoggingAspect  : Request uuid: 4d4bec76-430e-4125-b2db-b0b28c100583 -> Enter: com.omblanco.springboot.webflux.api.commons.web.controllers.CommonController.get() with argument[s] = [1]
+2020-12-05 20:26:27.767 DEBUG 9292 --- [oundedElastic-1] c.o.s.webflux.api.app.aop.LoggingAspect  : Request uuid: 841b8d37-5484-4e5a-80f7-710bbe58d690 -> Enter: com.omblanco.springboot.webflux.api.commons.services.CommonServiceImpl.findById() with argument[s] = [1]
+2020-12-05 20:26:27.769  INFO 9292 --- [oundedElastic-1] c.o.s.w.api.app.aop.ProfilingAspect      : StopWatch 'Profiling': running time = 1073100 ns
+---------------------------------------------
+ns         %     Task name
+---------------------------------------------
+001073100  100 %  execution(CommonServiceImpl.findById(..))
+
+2020-12-05 20:26:27.771 DEBUG 9292 --- [oundedElastic-2] c.o.s.webflux.api.app.aop.LoggingAspect  : Request uuid: f0391e74-44b1-4a59-aa33-4db18944b7a2 -> Enter: org.springframework.data.repository.CrudRepository.findById() with argument[s] = [1]
+Hibernate: 
+    select
+        user0_.id as id1_0_0_,
+        user0_.birthdate as birthdat2_0_0_,
+        user0_.email as email3_0_0_,
+        user0_.name as name4_0_0_,
+        user0_.password as password5_0_0_,
+        user0_.surname as surname6_0_0_ 
+    from
+        users user0_ 
+    where
+        user0_.id=?
+2020-12-05 20:26:27.785 DEBUG 9292 --- [oundedElastic-2] c.o.s.webflux.api.app.aop.LoggingAspect  : Request uuid: f0391e74-44b1-4a59-aa33-4db18944b7a2 -> Exit: org.springframework.data.repository.CrudRepository.findById() with result = Optional[User(id=1, name=John, surname=Doe, email=john@mail.com, birthdate=2011-12-18 13:17:17.0, password=$2a$10$vUE9JNc3ZflWL6u4HFH2kOEHWgNIahyAxoUoaZ1g0rsHJ3y9kzhwy)]
+2020-12-05 20:26:27.785 DEBUG 9292 --- [oundedElastic-2] c.o.s.webflux.api.app.aop.LoggingAspect  : Request uuid: 841b8d37-5484-4e5a-80f7-710bbe58d690 -> Exit: com.omblanco.springboot.webflux.api.commons.services.CommonServiceImpl.findById() with result = UserDTO(name=John, surname=Doe, email=john@mail.com, birthdate=2011-12-18 13:17:17.0, password=$2a$10$vUE9JNc3ZflWL6u4HFH2kOEHWgNIahyAxoUoaZ1g0rsHJ3y9kzhwy)
+2020-12-05 20:26:27.786 DEBUG 9292 --- [oundedElastic-2] c.o.s.webflux.api.app.aop.LoggingAspect  : Request uuid: 4d4bec76-430e-4125-b2db-b0b28c100583 -> Exit: com.omblanco.springboot.webflux.api.commons.web.controllers.CommonController.get() with result = <200 OK OK,UserDTO(name=John, surname=Doe, email=john@mail.com, birthdate=2011-12-18 13:17:17.0, password=$2a$10$vUE9JNc3ZflWL6u4HFH2kOEHWgNIahyAxoUoaZ1g0rsHJ3y9kzhwy),[Content-Type:"application/json"]>
+```
+
 ### Carga de configuración según entorno
 
 La carga de ficheros de configuración por entorno se realiza usando Spring profiles:
@@ -54,6 +81,14 @@ La carga de ficheros de configuración por entorno se realiza usando Spring prof
 ### Base de datos en memoria
 
 Tanto en la versión de MySQL como en la de mongo para el desarrollo y prueba en local se usan bases de datos en memoria con datos de prueba precargados.
+
+### Conversión de modelos
+
+Conversión de los modelos de las distintas capas de la aplicación utilizando Model Mapper.
+
+### Lombok
+
+Utilización de Lombok para generar los getters, setters y constructores y así evitar el código duplicado.
 
 ### Documentación
 
