@@ -2,9 +2,15 @@ package com.omblanco.springboot.webflux.api.client.dto;
 
 import java.util.Date;
 
-public class UserDTO {
+/**
+ * Tipo de dato del id
+ * @author ombla
+ *
+ * @param <K> Id del usuario
+ */
+public class UserDTO<K> {
 
-    private Long id;
+    private K id;
     
     private String name;
     
@@ -16,11 +22,11 @@ public class UserDTO {
     
     private String password;
 
-    public Long getId() {
+    public K getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(K id) {
         this.id = id;
     }
 

@@ -7,7 +7,7 @@ import com.omblanco.springboot.webflux.api.client.ReactiveUsersClient;
  * @author oscar.martinezblanco
  *
  */
-public class ReactiveUsersClientBuilder {
+public class ReactiveUsersClientBuilder<K> {
 
     private String user;
     
@@ -32,11 +32,11 @@ public class ReactiveUsersClientBuilder {
      * El usuario, la contraseña y el endpoint no pueden estar vacías
      * @return Cliente
      */
-    public ReactiveUsersClient build() {
+    public ReactiveUsersClient<K> build() {
         emptyString(this.user, "Usuario");
         emptyString(this.password, "Contraseña");
         emptyString(this.endpoint, "Endpoint");
-        return new ReactiveUsersClientImpl(this.user, this.password, this.endpoint);
+        return new ReactiveUsersClientImpl<K>(this.user, this.password, this.endpoint);
     }
     
     /**
@@ -46,11 +46,11 @@ public class ReactiveUsersClientBuilder {
      * @param endpoint Endpoint 
      * @return Cliente
      */
-    public static ReactiveUsersClient build(String user, String password, String endpoint) {
+    public static <K> ReactiveUsersClient<K> build(String user, String password, String endpoint) {
         emptyString(user, "Usuario");
         emptyString(password, "Contraseña");
         emptyString(endpoint, "Endpoint");
-        return new ReactiveUsersClientImpl(user, password, endpoint);
+        return new ReactiveUsersClientImpl<K>(user, password, endpoint);
     }
     
     /**
@@ -61,12 +61,12 @@ public class ReactiveUsersClientBuilder {
      * @param version Version
      * @return
      */
-    public static ReactiveUsersClient build(String user, String password, String endpoint, String version) {
+    public static <K> ReactiveUsersClient<K> build(String user, String password, String endpoint, String version) {
         emptyString(user, "Usuario");
         emptyString(password, "Contraseña");
         emptyString(endpoint, "Endpoint");
         emptyString(version, "Version");
-        return new ReactiveUsersClientImpl(user, password, endpoint, version);
+        return new ReactiveUsersClientImpl<>(user, password, endpoint, version);
     }    
 
     /**

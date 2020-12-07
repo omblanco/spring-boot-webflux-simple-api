@@ -10,27 +10,27 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  */
-public interface ReactiveUsersClient {
+public interface ReactiveUsersClient<K> {
 
     /**
      * Recupera todos los usuarios
      * @return Flux de usuarios
      */
-    Flux<UserDTO> getAllUsers();
+    Flux<UserDTO<K>> getAllUsers();
     
     /**
      * Recuera un usuario por id
      * @param id Id
      * @return Usuario
      */
-    Mono<UserDTO> get(Long id);
+    Mono<UserDTO<K>> get(K id);
     
     /**
      * Crea un nuevo usuario
      * @param user Usuario
      * @return Usuario creado
      */
-    Mono<UserDTO> save(UserDTO user);
+    Mono<UserDTO<K>> save(UserDTO<K> user);
     
     /**
      * Actualiza un usuario
@@ -38,12 +38,12 @@ public interface ReactiveUsersClient {
      * @param id Id
      * @return Usuario actualizado
      */
-    Mono<UserDTO> update(UserDTO user, Long id);
+    Mono<UserDTO<K>> update(UserDTO<K> user, K id);
     
     /**
      * Elimina un usuario
      * @param id Id de usuario a eliminar
      * @return Resultado de la operación
      */
-    Mono<Void> delete(String id);
+    Mono<Void> delete(K id);
 }

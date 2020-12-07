@@ -2,6 +2,7 @@ package com.omblanco.springboot.webflux.api.client.impl;
 
 import java.util.Collections;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,9 +13,9 @@ import com.omblanco.springboot.webflux.api.client.dto.UserDTO;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-class ReactiveUsersClientImpl implements ReactiveUsersClient {
+class ReactiveUsersClientImpl<K> implements ReactiveUsersClient<K> {
+	
 
-    //TODO:authentication
     private final String user;
     private final String password;
     private final String endpoint;
@@ -39,44 +40,44 @@ class ReactiveUsersClientImpl implements ReactiveUsersClient {
     }
 
     @Override
-    public Flux<UserDTO> getAllUsers() {
+    public Flux<UserDTO<K>> getAllUsers() {
         return this.client.get()
                 .uri(String.format(USER_BASE_URL, this.version))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .flatMapMany(response -> response.bodyToFlux(UserDTO.class));
+                .flatMapMany(response -> response.bodyToFlux(new ParameterizedTypeReference<UserDTO<K>>(){}));
     }
 
     @Override
-    public Mono<UserDTO> get(Long id) {
+    public Mono<UserDTO<K>> get(K id) {
         return this.client.get()
                 .uri(String.format(USER_BASE_URL_WITH_ID_PARAM, this.version), Collections.singletonMap(PARAM_ID_NAME, id))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(UserDTO.class);
+                .bodyToMono(new ParameterizedTypeReference<UserDTO<K>>(){});
     }
     
     @Override
-    public Mono<UserDTO> save(UserDTO user) {
+    public Mono<UserDTO<K>> save(UserDTO<K> user) {
         return client.post()
                 .uri(String.format(USER_BASE_URL, this.version))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(user))
-                .retrieve().bodyToMono(UserDTO.class);
+                .retrieve().bodyToMono(new ParameterizedTypeReference<UserDTO<K>>(){});
     }
 
     @Override
-    public Mono<UserDTO> update(UserDTO user, Long id) {
+    public Mono<UserDTO<K>> update(UserDTO<K> user, K id) {
         return client.post().uri(String.format(USER_BASE_URL_WITH_ID_PARAM, this.version), Collections.singletonMap("id", id))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(user))
-                .retrieve().bodyToMono(UserDTO.class);
+                .retrieve().bodyToMono(new ParameterizedTypeReference<UserDTO<K>>(){});
     }
 
     @Override
-    public Mono<Void> delete(String id) {
+    public Mono<Void> delete(K id) {
         return client.delete()
                 .uri(String.format(USER_BASE_URL_WITH_ID_PARAM, this.version), Collections.singletonMap("id", id))
                 .retrieve()
