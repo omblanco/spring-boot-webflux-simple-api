@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import com.omblanco.springboot.webflux.api.app.aop.LoggingAspect;
-import com.omblanco.springboot.webflux.api.app.aop.ProfilingAspect;
+import com.omblanco.springboot.webflux.api.commons.aop.LoggingAspect;
+import com.omblanco.springboot.webflux.api.commons.aop.ProfilingAspect;
 
 
 /**

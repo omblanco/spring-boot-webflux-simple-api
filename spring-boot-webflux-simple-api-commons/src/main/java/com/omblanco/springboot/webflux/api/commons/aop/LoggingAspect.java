@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.aop;
+package com.omblanco.springboot.webflux.api.commons.aop;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -60,8 +60,8 @@ public class LoggingAspect {
      * @return el objeto que sería devuelto originalmente en el método.
      * @throws Throwable Excepción lanzada por el método
      */
-    @Around("SystemArchitecture.inServiceLayer() || SystemArchitecture.inWebLayer() || SystemArchitecture.inDataAccessLayer() || SystemArchitecture.loggableElement()")
-    public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("SystemArchitecture.inServiceLayer() || SystemArchitecture.inWebLayer() || SystemArchitecture.inDataAccessLayer() || SystemArchitecture.loggableElement() || SystemArchitecture.traceableElement()")
+    public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String uuid = UUID.randomUUID().toString();
         
