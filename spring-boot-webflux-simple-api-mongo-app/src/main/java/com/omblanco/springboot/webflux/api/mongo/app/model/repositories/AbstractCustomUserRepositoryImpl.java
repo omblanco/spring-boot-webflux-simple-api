@@ -31,7 +31,7 @@ public abstract class AbstractCustomUserRepositoryImpl {
     }
     
     protected void addSortOperation(List<AggregationOperation> operations, Sort sort) {
-        if (!sort.isEmpty()) {
+        if (sort != null && !sort.isEmpty()) {
             SortOperation sortOpertions = new SortOperation(sort);
             operations.add(sortOpertions);
         }

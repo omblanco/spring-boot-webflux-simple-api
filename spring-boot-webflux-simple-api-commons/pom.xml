@@ -52,7 +52,6 @@
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
 		
-		
 		<!-- validator -->
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>

@@ -63,16 +63,18 @@ public abstract class CommonHandler {
         
         List<String> sortList = request.queryParams().get(SORT_PARAM_NAME);
         List<Order> orders = new ArrayList<>();
-        if (sortList != null) {
+        if (sortList != null ) {
             for (String sort : sortList) {
-                String[] sortTokens = sort.split(SPLIT_SORT_TOKEN);
-                
-                Direction direction = Direction.ASC;
-                if (sortTokens.length == 2 && sortTokens[1].equalsIgnoreCase(ORDER_DESC_NAME)) {
-                    direction = Direction.DESC;
+                if (!StringUtils.isEmpty(sort)) {
+                    String[] sortTokens = sort.split(SPLIT_SORT_TOKEN);
+                    
+                    Direction direction = Direction.ASC;
+                    if (sortTokens.length == 2 && sortTokens[1].equalsIgnoreCase(ORDER_DESC_NAME)) {
+                        direction = Direction.DESC;
+                    }
+                    Order order = new Order(direction, sortTokens[0]);
+                    orders.add(order);
                 }
-                Order order = new Order(direction, sortTokens[0]);
-                orders.add(order);
             }
         }
         

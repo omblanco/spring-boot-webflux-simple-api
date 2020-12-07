@@ -1,6 +1,11 @@
 package com.omblanco.springboot.webflux.api.client;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import com.omblanco.springboot.webflux.api.client.dto.RestResponsePage;
 import com.omblanco.springboot.webflux.api.client.dto.UserDTO;
+import com.omblanco.springboot.webflux.api.client.dto.UserFilterDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -46,4 +51,20 @@ public interface ReactiveUsersClient<K> {
      * @return Resultado de la operación
      */
     Mono<Void> delete(K id);
+    
+    /**
+     * Recupera un listado de usuarios fitrado y paginado
+     * @param filter Filtro de búsqueda
+     * @param sort Ordenación
+     * @return Lista de usuarios
+     */
+    Flux<UserDTO<K>> getUsers(UserFilterDTO filter, Sort sort);
+    
+    /**
+     * Recupera un listado de Usuarios paginado, ordenado y filtrado
+     * @param filter Filtro de búsqueda
+     * @param pageable Paginación
+     * @return Página
+     */
+    Mono<RestResponsePage<UserDTO<K>>> getUsers(UserFilterDTO filter, Pageable pageable);
 }
