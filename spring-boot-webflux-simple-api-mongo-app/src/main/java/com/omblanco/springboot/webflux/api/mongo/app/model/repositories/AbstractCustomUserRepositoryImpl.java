@@ -23,7 +23,7 @@ public abstract class AbstractCustomUserRepositoryImpl {
     private static final String I_TOKEN = "i";
     
     protected void addIlikeOperation(List<AggregationOperation> operations, String field, String value) {
-        if (!StringUtils.isEmpty(value)) {
+        if (StringUtils.hasLength(value)) {
             Criteria regex = Criteria.where(field).regex(value, I_TOKEN);
             MatchOperation match = new MatchOperation(regex);
             operations.add(match);
@@ -46,7 +46,7 @@ public abstract class AbstractCustomUserRepositoryImpl {
     }
     
     protected void addILikeCriteriaToQuery(Query query, String field, String value) {
-        if (!StringUtils.isEmpty(value)) {
+        if (StringUtils.hasLength(value)) {
             Criteria regex = Criteria.where(field).regex(value, I_TOKEN);
             query.addCriteria(regex);
         }

@@ -93,6 +93,13 @@
 			<artifactId>springfox-boot-starter</artifactId>
 		</dependency>
 		<!-- ./swagger -->
+		
+		<!-- springdoc ui -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webflux-ui</artifactId>
+		</dependency>
+		<!-- ./springdoc ui -->
 
 		<!-- Test -->
 		<dependency>

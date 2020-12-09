@@ -65,7 +65,7 @@ public abstract class CommonHandler {
         List<Order> orders = new ArrayList<>();
         if (sortList != null ) {
             for (String sort : sortList) {
-                if (!StringUtils.isEmpty(sort)) {
+                if (StringUtils.hasLength(sort)) {
                     String[] sortTokens = sort.split(SPLIT_SORT_TOKEN);
                     
                     Direction direction = Direction.ASC;
@@ -88,7 +88,7 @@ public abstract class CommonHandler {
      * @return resultado de la operación
      */
     protected boolean validateIsPresentAndNotEmptyParam(ServerRequest request, String paramName) {
-        return request.queryParam(paramName).isPresent() && !StringUtils.isEmpty(request.queryParam(paramName).get()); 
+        return request.queryParam(paramName).isPresent() && StringUtils.hasLength(request.queryParam(paramName).get()); 
     }
     
     /**

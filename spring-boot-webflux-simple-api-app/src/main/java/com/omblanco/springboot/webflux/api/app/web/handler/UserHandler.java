@@ -19,7 +19,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.omblanco.springboot.webflux.api.app.services.UserService;
 import com.omblanco.springboot.webflux.api.app.web.dto.UserDTO;
-import com.omblanco.springboot.webflux.api.commons.annotation.loggable.Loggable;
 import com.omblanco.springboot.webflux.api.commons.web.dto.UserFilterDTO;
 import com.omblanco.springboot.webflux.api.commons.web.handler.CommonHandler;
 
@@ -32,7 +31,6 @@ import reactor.core.publisher.Mono;
  * @author oscar.martinezblanco
  *
  */
-@Loggable
 @AllArgsConstructor
 @Component
 public class UserHandler extends CommonHandler {

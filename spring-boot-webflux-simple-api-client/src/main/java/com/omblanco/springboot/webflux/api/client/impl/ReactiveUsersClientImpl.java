@@ -69,8 +69,8 @@ class ReactiveUsersClientImpl<K> implements ReactiveUsersClient<K> {
                     .uri(String.format(USER_BASE_URL, this.version))
                     .header(HttpHeaders.AUTHORIZATION, BEARER_PARAM_NAME.concat(token.getToken()))
                     .accept(MediaType.APPLICATION_JSON)
-                    .exchange()
-                    .flatMapMany(response -> response.bodyToFlux(new ParameterizedTypeReference<UserDTO<K>>(){}));
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<UserDTO<K>>(){});
         });
     }
 
@@ -141,8 +141,8 @@ class ReactiveUsersClientImpl<K> implements ReactiveUsersClient<K> {
                             .build())
                     .header(HttpHeaders.AUTHORIZATION, BEARER_PARAM_NAME.concat(token.getToken()))
                     .accept(MediaType.APPLICATION_JSON)
-                    .exchange()
-                    .flatMapMany(response -> response.bodyToFlux(new ParameterizedTypeReference<UserDTO<K>>(){}));  
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<UserDTO<K>>(){});
         });
 	}
 
