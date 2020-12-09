@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -36,6 +37,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
+@Profile("swagger")
 public class SwaggerConfig {
 
     @Value("${app.version}")

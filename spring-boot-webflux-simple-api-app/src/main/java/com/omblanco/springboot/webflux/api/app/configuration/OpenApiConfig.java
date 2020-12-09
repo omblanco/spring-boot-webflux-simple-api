@@ -9,6 +9,7 @@ import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -17,6 +18,12 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 
+/**
+ * Clase de configuración de la docupentación Open Api de la Api REST
+ * @author ombla
+ *
+ */
+@Profile("openapi")
 @Configuration
 public class OpenApiConfig {
 
