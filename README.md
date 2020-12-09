@@ -7,6 +7,7 @@ Spring Boot &amp; WebFlux Simple Api
 - [Componentes](#componentes)
 - [Características](#características)
 - [Módulos](#módulos)
+- [Perfiles](#perfiles)
 - [Uso](#uso)
 
 ## Descripción
@@ -105,6 +106,24 @@ Documentación de los métodos rest utilizando Spring Fox y Swagger. En el despl
 - spring-boot-webflux-simple-api-mongo-app: réplica del módulo anterior pero versión para mongodb
 - spring-boot-webflux-simple-api-commons: módulo con clases comunes para desarrollar microservicios.
 - spring-boot-webflux-simple-api-client: cliente reactivo para consumir el api de usuarios expuesta.
+
+## Perfiles
+
+La aplicación hace uso de los “Spring Profiles” con dos objetivos, la carga de la configuración para los distintos entornos y para la activación y desactivación de funcionalidades.
+
+### Perfiles de entornos
+
+- Sin perfil: carga el fichero application.properties para el desarrollo en local.
+- dev: carga el fichero application-dev.properties para el despliegue en entorno de desarrollo.
+- stage: carga el fichero application-stage.properties para el despliegue en entorno stage.
+- pro: carga el fichero application-pro.properties para el despliegue en entorno producción
+
+### Perfiles de funcionalidades
+
+- profiling: activa el log para tracear las entradas y salidas de los métodos de las capas de la aplicación y su tiempo de ejecución.
+- security: activa la securización de la api mediante token.
+- swagger: habilita la página de documentación de la api usando swagger.
+- openapi: habilita la página de documentación de la api usando Open Api.
 
 ## Uso
 
