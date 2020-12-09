@@ -14,7 +14,7 @@ Spring Boot &amp; WebFlux Simple Api
 Api rest de ejemplo para la creación de microservicios reactivos con Spring Boot y Spring WebFlux tanto con una base de datos MySQL como Mongo. Contiene ejemplos tanto de definición de controladores con Spring MVC como con Endpoints Funcionales ([Functional Endpoints](https://spring.getdocs.org/en-US/spring-framework-docs/docs/spring-web-reactive/webflux/webflux-fn.html)). Implementa características como la securización, trazabilidad de capas, bbdd en memoria, documentación del endpoint … todas ellas activables mediante perfiles de Spring.
 
 ## Componentes
-- [Spring Boot 2.3.5](https://spring.io/projects/spring-boot)
+- [Spring Boot 2.4.0](https://spring.io/projects/spring-boot)
 - [Spring WebFlux](https://spring.io/projects/spring-framework)
 - [Spring Security](https://spring.io/projects/spring-security)
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
@@ -115,7 +115,9 @@ Documentación de los métodos rest utilizando Spring Fox y Swagger. En el despl
 
 ### Generación de artefactos
 
-Con maven instalado en el entorno, en el directorio raíz del proyecto lanzamos:
+#### Alternativa Maven
+
+En el directorio raíz del proyecto lanzamos:
 
 ```
 mvn clean package
@@ -145,7 +147,23 @@ Para omitir los tests:
 mvn clean package -DskipTests=true
 ```
 
+#### Alternativa sin Maven
+
+En el directorio raíz del proyecto se hace uso del comando mvnw tanto para windows como para unix
+
+```
+mvnw clean package
+```
+
+Alternativa para no lanzar los tests
+```
+mvnw clean package -DskipTests=true
+
+```
+
 ### Lanzar la aplicación
+
+#### Alternativa Maven
 
 Moverse al directorio:
 
@@ -171,17 +189,7 @@ Para lanzar la aplicación con perfiles:
 java -jar -Dspring.profiles.active=profiling,dev,security spring-boot-webflux-simple-api-mongo-app-x.x.x.jar
 ```
 
-Alternativa sin Maven:
-En el directorio raíz del proyecto se hace uso del comando mvnw tanto para windows como para unix
-
-```
-mvnw clean package
-```
-
-Alternativa para no lanzar los tests
-```
-mvnw clean package -DskipTests=true
-```
+#### Alternativa sin Maven
 
 Lanzar las aplicaciones desde el directorio raíz:
 
@@ -195,7 +203,8 @@ o para mongo:
 mvnw -pl spring-boot-webflux-simple-api-mongo-app -am spring-boot:run
 ```
 
-Y por último alternativa añadiendo profiles:
+Y añadiendo profiles:
+
 ```
 mvnw -pl spring-boot-webflux-simple-api-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
 mvnw -pl spring-boot-webflux-simple-api-mongo-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
