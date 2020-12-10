@@ -248,7 +248,7 @@ Incluir la dependencia en el proyecto
 
 Recuperar todos los usuarios con MySQL y MongoDB:
 
-```
+```java
 String email = "john@mail.com";
 String password = "1234";
 String endpointMySQL = "http://localhost:8080";
@@ -276,7 +276,7 @@ userFluxWithString.subscribe(user -> LOGGER.info("{}", user));
 ```
 
 Filtrado de usuarios:
-```
+```java
 String email = "john@mail.com";
 String password = "1234";
 String endpointMySQL = "http://localhost:8080";
@@ -291,7 +291,7 @@ ReactiveUsersClientBuilder.build(email, password, endpointMySQL).getUsers(filter
 ```
 
 Paginación y ordenación:
-```
+```java
 String email = "john@mail.com";
 String password = "1234";
 String endpointMySQL = "http://localhost:8080";
@@ -310,7 +310,7 @@ ReactiveUsersClientBuilder.build(email, password, endpointMongoDB).getUsers(filt
 ```
 
 Guardado de usuario:
-```
+```java
 String email = "john@mail.com";
 String password = "1234";
 String endpointMySQL = "http://localhost:8080";
@@ -329,7 +329,7 @@ userClient.save(user).subscribe(newUser -> LOGGER.info("New user: {}", newUser))
 ```
 
 Guardado con errores:
-```
+```java
 String email = "john@mail.com";
 String password = "1234";
 String endpointMySQL = "http://localhost:8080";
