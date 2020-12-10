@@ -13,7 +13,7 @@
 
 	<groupId>com.omblanco.springboot.webflux.api</groupId>
 	<artifactId>spring-boot-webflux-simple-api</artifactId>
-	<version>1.6.0</version>
+	<version>1.7.0</version>
 	<name>spring-boot-webflux-simple-api</name>
 	<description>Aplicación básica para una api rest con WebFlux</description>
 	<packaging>pom</packaging>
