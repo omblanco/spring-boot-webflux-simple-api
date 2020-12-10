@@ -9,6 +9,10 @@ Spring Boot &amp; WebFlux Simple Api
 - [Módulos](#módulos)
 - [Perfiles](#perfiles)
 - [Uso](#uso)
+	- [Requisitos](#requisitos)
+	- [Generación de artefactos](#generación-de-artefactos)
+	- [Lanzar la aplicación](#lanzar-la-aplicación)
+	- [Utilización del client](#utilización-del-client)
 
 ## Descripción
 
@@ -227,4 +231,142 @@ Y añadiendo profiles:
 ```
 mvnw -pl spring-boot-webflux-simple-api-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
 mvnw -pl spring-boot-webflux-simple-api-mongo-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
+```
+
+### Utilización del client
+
+Incluir la dependencia en el proyecto
+```
+<dependency>
+	<groupId>com.omblanco.springboot.webflux.api</groupId>
+	<artifactId>spring-boot-webflux-simple-api-client</artifactId>
+	<version>1.6.0</version>
+</dependency>
+```
+
+#### Ejemplos
+
+Recuperar todos los usuarios con MySQL y MongoDB:
+
+```
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MySQL users");
+ReactiveUsersClientBuilder.build(email, password, endpointMySQL).getAllUsers().subscribe(user -> LOGGER.info("{}", user));
+
+LOGGER.info("Mongo users");
+ReactiveUsersClientBuilder.build(email, password, endpointMongoDB).getAllUsers().subscribe(user -> LOGGER.info("{}", user));
+
+LOGGER.info("MySQL user client");
+ReactiveUsersClientBuilder<Long> builderWithLong = new ReactiveUsersClientBuilder<Long>();
+builderWithLong.setUser(email);
+builderWithLong.setPassword(password);
+builderWithLong.setEndpoint(endpointMySQL);
+ReactiveUsersClient<Long> userClientWithLong = builderWithLong.build();
+Flux<UserDTO<Long>> userFluxWithLong = userClientWithLong.getAllUsers();
+userFluxWithLong.subscribe(user -> LOGGER.info("{}", user));
+
+LOGGER.info("Mongo user client");
+ReactiveUsersClient<String> userClientWithString = ReactiveUsersClientBuilder.build(email, password, endpointMongoDB);
+Flux<UserDTO<String>> userFluxWithString = userClientWithString.getAllUsers();
+userFluxWithString.subscribe(user -> LOGGER.info("{}", user));
+```
+
+Filtrado de usuarios:
+```
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MySQL users");
+
+UserFilterDTO filter = new UserFilterDTO();
+filter.setName("oscar");
+Sort sort = null;
+ReactiveUsersClientBuilder.build(email, password, endpointMySQL).getUsers(filter, sort).subscribe(user -> LOGGER.info("{}", user));
+```
+
+Paginación y ordenación:
+```
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MongoDB users");
+
+UserFilterDTO filter = new UserFilterDTO();
+filter.setName("oscar");
+List<Order> orders = new ArrayList<Order>();
+
+orders.add(new Order(Direction.DESC, "name"));
+Sort sort = Sort.by(orders);
+Pageable pageable = PageRequest.of(0, 5, sort);
+ReactiveUsersClientBuilder.build(email, password, endpointMongoDB).getUsers(filter, pageable).subscribe(page -> LOGGER.info("{}", page.getContent()));
+```
+
+Guardado de usuario:
+```
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+UserDTO<Long> user = new UserDTO<Long>();
+user.setName("fooo");
+user.setSurname("surname");
+user.setEmail("foooo@mail.com");
+user.setPassword("12345678");
+user.setBirthdate(new Date());
+
+LOGGER.info("MySQL users");
+ReactiveUsersClient<Long> userClient = ReactiveUsersClientBuilder.build(email, password, endpointMySQL);
+userClient.save(user).subscribe(newUser -> LOGGER.info("New user: {}", newUser));
+```
+
+Guardado con errores:
+```
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MySQL users");
+
+ReactiveUsersClient<Long> userClient = ReactiveUsersClientBuilder.build(email, password, endpointMySQL);
+
+UserDTO<Long> userWithErrors = new UserDTO<Long>();
+userWithErrors.setName("o");
+userWithErrors.setEmail("eoa");
+userClient.save(userWithErrors).subscribe(newUser -> LOGGER.info("New user: {}", newUser), e -> {
+    if (e instanceof WebClientResponseException) {
+        WebClientResponseException clientError = (WebClientResponseException)e;
+        if (clientError.getRawStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY.value()) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                ValidationErrorsResponse result = mapper.readValue(((WebClientResponseException) e).getResponseBodyAsString(),
+                        ValidationErrorsResponse.class);
+                LOGGER.error(result.getCode());
+                LOGGER.error(result.getMessage());
+                
+                for (ValidationError validationError : result.getErrors()) {
+                    LOGGER.error(validationError.getPath());
+                    LOGGER.error(validationError.getCode());
+                    LOGGER.error(validationError.getMessage());
+                }
+                
+            } catch (Exception ex) {
+                LOGGER.error("Error getting response", ex);
+            }
+        } else {
+            LOGGER.error("Another type of error", clientError);
+        }
+    } else {
+        LOGGER.error("Error on request", e);
+    }
+}); 
 ```
