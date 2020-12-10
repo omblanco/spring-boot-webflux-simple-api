@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 public abstract class BaseSpecifications {
 
     protected static void addLikeIgnoreCaseIfNotEmpty(final String fieldValue, final List<Predicate> predicates, final CriteriaBuilder builder, Expression<String> expression) {
-        if (!StringUtils.isEmpty(fieldValue)) {
+        if (StringUtils.hasLength(fieldValue)) {
             predicates.add(builder.like(builder.lower(expression), "%" + fieldValue.toLowerCase() + "%"));
         }
     }

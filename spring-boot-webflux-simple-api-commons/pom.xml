@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.omblanco.springboot.webflux.api</groupId>
 		<artifactId>spring-boot-webflux-simple-api</artifactId>
-		<version>1.6.0</version>
+		<version>1.7.0</version>
 	</parent>
 
 	<artifactId>spring-boot-webflux-simple-api-commons</artifactId>
@@ -52,7 +52,6 @@
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
 		
-		
 		<!-- validator -->
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
@@ -85,5 +84,4 @@
 		</dependency>
 
 	</dependencies>
-
 </project>

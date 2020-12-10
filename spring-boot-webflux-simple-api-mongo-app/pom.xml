@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.omblanco.springboot.webflux.api</groupId>
 		<artifactId>spring-boot-webflux-simple-api</artifactId>
-		<version>1.6.0</version>
+		<version>1.7.0</version>
 	</parent>
 	
 	<artifactId>spring-boot-webflux-simple-api-mongo-app</artifactId>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>com.omblanco.springboot.webflux.api</groupId>
 			<artifactId>spring-boot-webflux-simple-api-commons</artifactId>
-			<version>1.6.0</version>
+			<version>1.7.0</version>
 		</dependency>
 		<!-- ./simple-api -->
 		
@@ -91,6 +91,13 @@
 			<artifactId>springfox-boot-starter</artifactId>
 		</dependency>
 		<!-- ./swagger -->
+		
+		<!-- springdoc ui -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webflux-ui</artifactId>
+		</dependency>
+		<!-- ./springdoc ui -->
 
 		<!-- Test -->
 		<dependency>
@@ -123,20 +130,20 @@
 	<build>
 		<plugins>
 			<plugin>
-			   <groupId>org.springframework.boot</groupId>
-			   <artifactId>spring-boot-maven-plugin</artifactId>
-			   <configuration>
-			     <fork>true</fork>
-			     <skip>false</skip>
-			   </configuration>
-			   <executions>
-			     <execution>
-			       <goals>
-			         <goal>repackage</goal>
-			       </goals>
-			     </execution>
-			   </executions>
-			 </plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+					<skip>false</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

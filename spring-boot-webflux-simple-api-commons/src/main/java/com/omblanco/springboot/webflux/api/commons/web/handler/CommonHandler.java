@@ -63,16 +63,18 @@ public abstract class CommonHandler {
         
         List<String> sortList = request.queryParams().get(SORT_PARAM_NAME);
         List<Order> orders = new ArrayList<>();
-        if (sortList != null) {
+        if (sortList != null ) {
             for (String sort : sortList) {
-                String[] sortTokens = sort.split(SPLIT_SORT_TOKEN);
-                
-                Direction direction = Direction.ASC;
-                if (sortTokens.length == 2 && sortTokens[1].equalsIgnoreCase(ORDER_DESC_NAME)) {
-                    direction = Direction.DESC;
+                if (StringUtils.hasLength(sort)) {
+                    String[] sortTokens = sort.split(SPLIT_SORT_TOKEN);
+                    
+                    Direction direction = Direction.ASC;
+                    if (sortTokens.length == 2 && sortTokens[1].equalsIgnoreCase(ORDER_DESC_NAME)) {
+                        direction = Direction.DESC;
+                    }
+                    Order order = new Order(direction, sortTokens[0]);
+                    orders.add(order);
                 }
-                Order order = new Order(direction, sortTokens[0]);
-                orders.add(order);
             }
         }
         
@@ -86,7 +88,7 @@ public abstract class CommonHandler {
      * @return resultado de la operación
      */
     protected boolean validateIsPresentAndNotEmptyParam(ServerRequest request, String paramName) {
-        return request.queryParam(paramName).isPresent() && !StringUtils.isEmpty(request.queryParam(paramName).get()); 
+        return request.queryParam(paramName).isPresent() && StringUtils.hasLength(request.queryParam(paramName).get()); 
     }
     
     /**

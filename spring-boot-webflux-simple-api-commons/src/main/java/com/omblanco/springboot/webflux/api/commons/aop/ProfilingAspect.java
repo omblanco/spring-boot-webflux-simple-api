@@ -1,4 +1,4 @@
-package com.omblanco.springboot.webflux.api.app.aop;
+package com.omblanco.springboot.webflux.api.commons.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -9,7 +9,7 @@ import org.springframework.util.StopWatch;
 
 @Aspect
 public class ProfilingAspect {
-
+	
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfilingAspect.class);
 
     /**

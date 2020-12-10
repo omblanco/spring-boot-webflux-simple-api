@@ -7,14 +7,19 @@ Spring Boot &amp; WebFlux Simple Api
 - [Componentes](#componentes)
 - [Características](#características)
 - [Módulos](#módulos)
+- [Perfiles](#perfiles)
 - [Uso](#uso)
+	- [Requisitos](#requisitos)
+	- [Generación de artefactos](#generación-de-artefactos)
+	- [Lanzar la aplicación](#lanzar-la-aplicación)
+	- [Utilización del client](#utilización-del-client)
 
 ## Descripción
 
 Api rest de ejemplo para la creación de microservicios reactivos con Spring Boot y Spring WebFlux tanto con una base de datos MySQL como Mongo. Contiene ejemplos tanto de definición de controladores con Spring MVC como con Endpoints Funcionales ([Functional Endpoints](https://spring.getdocs.org/en-US/spring-framework-docs/docs/spring-web-reactive/webflux/webflux-fn.html)). Implementa características como la securización, trazabilidad de capas, bbdd en memoria, documentación del endpoint … todas ellas activables mediante perfiles de Spring.
 
 ## Componentes
-- [Spring Boot 2.3.5](https://spring.io/projects/spring-boot)
+- [Spring Boot 2.4.0](https://spring.io/projects/spring-boot)
 - [Spring WebFlux](https://spring.io/projects/spring-framework)
 - [Spring Security](https://spring.io/projects/spring-security)
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
@@ -106,6 +111,24 @@ Documentación de los métodos rest utilizando Spring Fox y Swagger. En el despl
 - spring-boot-webflux-simple-api-commons: módulo con clases comunes para desarrollar microservicios.
 - spring-boot-webflux-simple-api-client: cliente reactivo para consumir el api de usuarios expuesta.
 
+## Perfiles
+
+La aplicación hace uso de los “Spring Profiles” con dos objetivos, la carga de la configuración para los distintos entornos y para la activación y desactivación de funcionalidades.
+
+### Perfiles de entornos
+
+- Sin perfil: carga el fichero application.properties para el desarrollo en local.
+- dev: carga el fichero application-dev.properties para el despliegue en entorno de desarrollo.
+- stage: carga el fichero application-stage.properties para el despliegue en entorno stage.
+- pro: carga el fichero application-pro.properties para el despliegue en entorno producción
+
+### Perfiles de funcionalidades
+
+- profiling: activa el log para tracear las entradas y salidas de los métodos de las capas de la aplicación y su tiempo de ejecución.
+- security: activa la securización de la api mediante token.
+- swagger: habilita la página de documentación de la api usando swagger.
+- openapi: habilita la página de documentación de la api usando Open Api.
+
 ## Uso
 
 ### Requisitos
@@ -115,7 +138,9 @@ Documentación de los métodos rest utilizando Spring Fox y Swagger. En el despl
 
 ### Generación de artefactos
 
-Con maven instalado en el entorno, en el directorio raíz del proyecto lanzamos:
+#### Alternativa Maven
+
+En el directorio raíz del proyecto lanzamos:
 
 ```
 mvn clean package
@@ -145,7 +170,23 @@ Para omitir los tests:
 mvn clean package -DskipTests=true
 ```
 
+#### Alternativa sin Maven
+
+En el directorio raíz del proyecto se hace uso del comando mvnw tanto para windows como para unix
+
+```
+mvnw clean package
+```
+
+Alternativa para no lanzar los tests
+```
+mvnw clean package -DskipTests=true
+
+```
+
 ### Lanzar la aplicación
+
+#### Alternativa Maven
 
 Moverse al directorio:
 
@@ -171,17 +212,7 @@ Para lanzar la aplicación con perfiles:
 java -jar -Dspring.profiles.active=profiling,dev,security spring-boot-webflux-simple-api-mongo-app-x.x.x.jar
 ```
 
-Alternativa sin Maven:
-En el directorio raíz del proyecto se hace uso del comando mvnw tanto para windows como para unix
-
-```
-mvnw clean package
-```
-
-Alternativa para no lanzar los tests
-```
-mvnw clean package -DskipTests=true
-```
+#### Alternativa sin Maven
 
 Lanzar las aplicaciones desde el directorio raíz:
 
@@ -195,8 +226,147 @@ o para mongo:
 mvnw -pl spring-boot-webflux-simple-api-mongo-app -am spring-boot:run
 ```
 
-Y por último alternativa añadiendo profiles:
+Y añadiendo profiles:
+
 ```
 mvnw -pl spring-boot-webflux-simple-api-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
 mvnw -pl spring-boot-webflux-simple-api-mongo-app -am spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=profiling,security"
+```
+
+### Utilización del client
+
+Incluir la dependencia en el proyecto
+```
+<dependency>
+	<groupId>com.omblanco.springboot.webflux.api</groupId>
+	<artifactId>spring-boot-webflux-simple-api-client</artifactId>
+	<version>1.6.0</version>
+</dependency>
+```
+
+#### Ejemplos
+
+Recuperar todos los usuarios con MySQL y MongoDB:
+
+```java
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MySQL users");
+ReactiveUsersClientBuilder.build(email, password, endpointMySQL).getAllUsers().subscribe(user -> LOGGER.info("{}", user));
+
+LOGGER.info("Mongo users");
+ReactiveUsersClientBuilder.build(email, password, endpointMongoDB).getAllUsers().subscribe(user -> LOGGER.info("{}", user));
+
+LOGGER.info("MySQL user client");
+ReactiveUsersClientBuilder<Long> builderWithLong = new ReactiveUsersClientBuilder<Long>();
+builderWithLong.setUser(email);
+builderWithLong.setPassword(password);
+builderWithLong.setEndpoint(endpointMySQL);
+ReactiveUsersClient<Long> userClientWithLong = builderWithLong.build();
+Flux<UserDTO<Long>> userFluxWithLong = userClientWithLong.getAllUsers();
+userFluxWithLong.subscribe(user -> LOGGER.info("{}", user));
+
+LOGGER.info("Mongo user client");
+ReactiveUsersClient<String> userClientWithString = ReactiveUsersClientBuilder.build(email, password, endpointMongoDB);
+Flux<UserDTO<String>> userFluxWithString = userClientWithString.getAllUsers();
+userFluxWithString.subscribe(user -> LOGGER.info("{}", user));
+```
+
+Filtrado de usuarios:
+```java
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MySQL users");
+
+UserFilterDTO filter = new UserFilterDTO();
+filter.setName("oscar");
+Sort sort = null;
+ReactiveUsersClientBuilder.build(email, password, endpointMySQL).getUsers(filter, sort).subscribe(user -> LOGGER.info("{}", user));
+```
+
+Paginación y ordenación:
+```java
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MongoDB users");
+
+UserFilterDTO filter = new UserFilterDTO();
+filter.setName("oscar");
+List<Order> orders = new ArrayList<Order>();
+
+orders.add(new Order(Direction.DESC, "name"));
+Sort sort = Sort.by(orders);
+Pageable pageable = PageRequest.of(0, 5, sort);
+ReactiveUsersClientBuilder.build(email, password, endpointMongoDB).getUsers(filter, pageable).subscribe(page -> LOGGER.info("{}", page.getContent()));
+```
+
+Guardado de usuario:
+```java
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+UserDTO<Long> user = new UserDTO<Long>();
+user.setName("fooo");
+user.setSurname("surname");
+user.setEmail("foooo@mail.com");
+user.setPassword("12345678");
+user.setBirthdate(new Date());
+
+LOGGER.info("MySQL users");
+ReactiveUsersClient<Long> userClient = ReactiveUsersClientBuilder.build(email, password, endpointMySQL);
+userClient.save(user).subscribe(newUser -> LOGGER.info("New user: {}", newUser));
+```
+
+Guardado con errores:
+```java
+String email = "john@mail.com";
+String password = "1234";
+String endpointMySQL = "http://localhost:8080";
+String endpointMongoDB = "http://localhost:8081";
+
+LOGGER.info("MySQL users");
+
+ReactiveUsersClient<Long> userClient = ReactiveUsersClientBuilder.build(email, password, endpointMySQL);
+
+UserDTO<Long> userWithErrors = new UserDTO<Long>();
+userWithErrors.setName("o");
+userWithErrors.setEmail("eoa");
+userClient.save(userWithErrors).subscribe(newUser -> LOGGER.info("New user: {}", newUser), e -> {
+    if (e instanceof WebClientResponseException) {
+        WebClientResponseException clientError = (WebClientResponseException)e;
+        if (clientError.getRawStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY.value()) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                ValidationErrorsResponse result = mapper.readValue(((WebClientResponseException) e).getResponseBodyAsString(),
+                        ValidationErrorsResponse.class);
+                LOGGER.error(result.getCode());
+                LOGGER.error(result.getMessage());
+                
+                for (ValidationError validationError : result.getErrors()) {
+                    LOGGER.error(validationError.getPath());
+                    LOGGER.error(validationError.getCode());
+                    LOGGER.error(validationError.getMessage());
+                }
+                
+            } catch (Exception ex) {
+                LOGGER.error("Error getting response", ex);
+            }
+        } else {
+            LOGGER.error("Another type of error", clientError);
+        }
+    } else {
+        LOGGER.error("Error on request", e);
+    }
+}); 
 ```

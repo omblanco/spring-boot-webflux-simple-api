@@ -38,7 +38,8 @@ public class SecurityWebFilterChainConfig {
                 "/configuration/security",
                 "/swagger-ui.html",
                 "/swagger-ui/**",
-                "/webjars/**"};
+                "/webjars/**",
+                "/v3/api-docs/**"};
         
         return http.cors().disable()
                 .exceptionHandling()

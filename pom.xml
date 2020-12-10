@@ -7,13 +7,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.5.RELEASE</version>
+		<version>2.4.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>com.omblanco.springboot.webflux.api</groupId>
 	<artifactId>spring-boot-webflux-simple-api</artifactId>
-	<version>1.6.0</version>
+	<version>1.7.0</version>
 	<name>spring-boot-webflux-simple-api</name>
 	<description>Aplicación básica para una api rest con WebFlux</description>
 	<packaging>pom</packaging>
@@ -56,18 +56,25 @@
 			</dependency>
 			<!-- ./swagger -->
 			
+			<!-- springdoc ui -->
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-webflux-ui</artifactId>
+				<version>1.5.0</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
-	   <plugins>
-	     <plugin>
-	       <groupId>org.springframework.boot</groupId>
-	       <artifactId>spring-boot-maven-plugin</artifactId>
-	       <configuration>
-	         <skip>true</skip>
-	       </configuration>
-	     </plugin>
-	   </plugins>
-	 </build>	
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
